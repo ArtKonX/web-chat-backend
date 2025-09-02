@@ -230,23 +230,6 @@ router.post('/registration', async (ctx) => {
   }
 });
 
-router.post('/login', async (ctx) => {
-  let connection;
-  try {
-
-    connection = await getConnection(pool);
-
-    if (connection) await QueryLogin(ctx, connection);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    // Освобождаем соединение
-    if (connection) {
-      connection.release();
-    }
-  }
-});
-
 // Выходим из аккаунта
 router.post('/logout', QueryLogOut);
 

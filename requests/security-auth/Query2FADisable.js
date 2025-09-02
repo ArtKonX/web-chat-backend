@@ -2,8 +2,6 @@ const bcrypt = require('bcrypt');
 
 const findUserById = require('../../utils/utility-userid/findUserById');
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 module.exports = Query2FADisable = async (ctx, connection) => {
     try {
 
@@ -86,7 +84,7 @@ module.exports = Query2FADisable = async (ctx, connection) => {
                 ctx.cookies.set('jwtToken', '', {
                     expires: new Date(0),
                     httpOnly: true,
-                    secure: isProduction || ctx.request.secure,
+                    secure: true,
                     sameSite: 'None'
                 });
 
