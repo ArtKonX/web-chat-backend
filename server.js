@@ -1,5 +1,5 @@
 const koaBody = require('koa-body').default;
-const https = require('https');
+const http = require('http');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -838,13 +838,7 @@ setInterval(() => {
   cleanupFiles()
 }, 5000)
 
-const server = https.createServer(
-  {
-    key: fs.readFileSync(path.join(__dirname, process.env.PRIVATE_KEY_PATH)),
-    cert: fs.readFileSync(path.join(__dirname, process.env.CERT_PATH))
-  },
-  app.callback()
-);
+const server = http.createServer(app.callback());
 
 app.use(router.routes()).use(router.allowedMethods());
 
