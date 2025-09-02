@@ -130,11 +130,12 @@ module.exports = QueryLogin = async (ctx, connection) => {
         // httpOnly чтобы был запрет к кукам из JS для безопасности
         // secure для передачи только по HTTPS
         // sameSite: 'None' без этого куки не работаю в Хроме
+        const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https';
         ctx.cookies.set('jwtToken', token, {
-            expires: new Date(Date.now() + 604800000),
             httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'None' : 'Lax'
+            secure: isSecure,
+            sameSite: isSecure ? 'None' : 'Lax',
+            expires: new Date(Date.now() + 604800000),
         });
         console.log('Cookies теперь работают)', isProduction, ctx.request.secure);
 
