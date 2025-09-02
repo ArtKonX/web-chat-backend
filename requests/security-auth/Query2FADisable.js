@@ -84,7 +84,7 @@ module.exports = Query2FADisable = async (ctx, connection) => {
                 ctx.cookies.set('jwtToken', '', {
                     expires: new Date(0),
                     httpOnly: true,
-                    secure: true,
+                    secure: false,
                     sameSite: 'None'
                 });
 
