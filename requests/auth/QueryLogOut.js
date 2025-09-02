@@ -6,7 +6,7 @@ module.exports = async function QueryLogout(ctx) {
         ctx.cookies.set('jwtToken', '', {
             expires: new Date(0),
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: 'None'
         });
 
