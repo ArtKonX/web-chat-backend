@@ -55,6 +55,7 @@ const path = require('path');
 require('dotenv').config();
 
 const app = new Koa();
+app.proxy = true;
 const publicPath = path.join(__dirname, '/public');
 app.use(koaStatic(publicPath));
 const port = process.env.PORT || 7070;
