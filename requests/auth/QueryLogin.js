@@ -131,7 +131,7 @@ module.exports = QueryLogin = async (ctx, connection) => {
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
-            secure: true,
+            secure: ctx.request.secure,
             sameSite: 'None'
         });
         console.log('Cookies теперь работают)');
