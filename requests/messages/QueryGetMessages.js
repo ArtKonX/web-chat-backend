@@ -68,22 +68,24 @@ module.exports = QueryGetMessages = async (ctx, connection) => {
         // Функция для создания отсутсвующих папкок
         function createTempDirs() {
             const basePath = join(__dirname, '../../public/tempGetMessages/');
-
-            // Путь к папке со скачанными закодированными файлами
             const tempEncrPath = join(basePath, 'encrypted/');
 
-            const paths = {
-                encrPath: tempEncrPath
-            }
-
-            // Если папки не существует, то создаем
-            Object.values(paths).forEach(dir => {
-                if (!existsSync(dir)) {
-                    mkdirSync(dir);
+            try {
+                // Проверяем и создаем директории
+                if (!existsSync(basePath)) {
+                    mkdirSync(basePath, { recursive: true });
                 }
-            })
+                if (!existsSync(tempEncrPath)) {
+                    mkdirSync(tempEncrPath, { recursive: true });
+                }
 
-            return paths
+                return {
+                    encrPath: tempEncrPath
+                };
+            } catch (error) {
+                console.error('Ошибка создания директорий:', error);
+                throw error;
+            }
         }
 
         const pathDirs = createTempDirs();
