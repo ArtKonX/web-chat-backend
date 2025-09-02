@@ -5,6 +5,8 @@ const colorsForUsers = require('../../data/colors-for-users.json');
 
 const bcrypt = require('bcrypt');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = QueryRegistaration = async (ctx, connection) => {
     try {
         const { email, name, password, id, publicKey } = ctx.request.body;
@@ -135,7 +137,7 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
-            secure: ctx.request.secure,
+            secure: isProduction || ctx.request.secure,
             sameSite: 'None'
         });
         console.log('Cookies теперь работают)');

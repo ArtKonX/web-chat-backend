@@ -2,6 +2,8 @@ const { sign } = require('jsonwebtoken');
 
 const bcrypt = require('bcrypt');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const updateAttempts = require('../../actions-with-bd/updateAttempts');
 const findUserById = require('../../utils/utility-userid/findUserById');
 
@@ -131,7 +133,7 @@ module.exports = QueryLogin = async (ctx, connection) => {
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
-            secure: ctx.request.secure,
+            secure: isProduction || ctx.request.secure,
             sameSite: 'None'
         });
         console.log('Cookies теперь работают)');
