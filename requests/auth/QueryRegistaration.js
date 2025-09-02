@@ -5,6 +5,8 @@ const colorsForUsers = require('../../data/colors-for-users.json');
 
 const bcrypt = require('bcrypt');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = QueryRegistaration = async (ctx, connection) => {
     try {
         const { email, name, password, id, publicKey } = ctx.request.body;
@@ -132,11 +134,13 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
         // httpOnly чтобы был запрет к кукам из JS для безопасности
         // secure для передачи только по HTTPS
         // sameSite: 'None' без этого куки не работаю в Хроме
+        const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
-            secure: true,
+            secure: isSecure,
             httpOnly: true,
-            sameSite: 'None'
+             sameSite: isProduction ? 'None' : 'Lax'
         });
         console.log('Cookies теперь работают)');
 
