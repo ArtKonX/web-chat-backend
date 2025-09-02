@@ -89,7 +89,7 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
 
         // Если у нас есть href то все OK
 
-        const fileTempPath = `https://web-chat-backend.onrender.com/tempSendMessages/encrypted/` + file.originalFilename
+        const fileTempPath = `https://web-chat-backend-s29s.onrender.com/tempSendMessages/encrypted/` + file.originalFilename
 
         const tempDirMessagesFiles = path.join(__dirname, '../../public/tempSendMessages/encrypted/' + file.originalFilename);
 
