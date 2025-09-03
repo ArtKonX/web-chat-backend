@@ -71,6 +71,8 @@ app.use(koaBody({
 app.use(async (ctx, next) => {
   const origin = ctx.request.headers.origin || 'https://localhost:3000';
 
+  console.log('origin', origin)
+
   ctx.set('Access-Control-Allow-Origin', origin);
   ctx.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
   ctx.set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
