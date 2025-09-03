@@ -134,8 +134,7 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
             httpOnly: true,
             secure: true,
             sameSite: 'None',
-            path: '/',
-            domain: 'localhost'
+            path: '/'
         });
         console.log('Cookies теперь работают)');
 
