@@ -129,10 +129,13 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
         // secure для передачи только по HTTPS
         // sameSite: 'None' без этого куки не работаю в Хроме
 
+
+        const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
-            secure: true,
+            secure: isSecure,
             sameSite: 'None',
             path: '/'
         });
