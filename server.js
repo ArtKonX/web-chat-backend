@@ -69,7 +69,7 @@ app.use(koaBody({
 
 // CORS middleware
 app.use(async (ctx, next) => {
-  const origin = ctx.request.headers.origin;
+  const origin = 'https://localhost:3000' || ctx.request.headers.origin;
 
   ctx.set('Access-Control-Allow-Origin', origin);
   ctx.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
