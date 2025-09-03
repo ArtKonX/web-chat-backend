@@ -135,7 +135,7 @@ module.exports = QueryLogin = async (ctx, connection) => {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
             secure: isSecure,
-            sameSite: isSecure ? 'None' : 'Lax'
+            sameSite: 'Lax'
         });
         console.log('Cookies теперь работают)');
 
