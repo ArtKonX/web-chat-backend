@@ -131,11 +131,13 @@ module.exports = QueryLogin = async (ctx, connection) => {
 
         const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
 
+        const isSafari = /Safari/.test(navigator.userAgent) && /Macintosh/.test(navigator.userAgent);
+
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
             secure: isSecure,
-            sameSite: 'None',
+            sameSite: isSafari ? 'Lax' : 'None',
             domain: 'web-chat-backend-s29s.onrender.com'
         });
         console.log('Cookies теперь работают)');
