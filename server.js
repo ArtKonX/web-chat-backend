@@ -197,7 +197,7 @@ router.post('/check-token', async (ctx, next) => {
   }
 });
 
-router.post('/login', async (ctx, next) => {
+router.post('/sing-in', async (ctx, next) => {
   let connection;
   try {
 
