@@ -127,12 +127,13 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
             expiresIn
         });
 
+        const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+
         // Формируем печеньки в браузере)
         // Куки на 7 дней ровно столько действителен токен
         // httpOnly чтобы был запрет к кукам из JS для безопасности
         // secure для передачи только по HTTPS
         // sameSite: 'None' без этого куки не работаю в Хроме
-        const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
 
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
@@ -140,6 +141,7 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
             httpOnly: true,
             sameSite: 'None'
         });
+
         console.log('Cookies теперь работают)');
 
         // Теперь мы в системе)

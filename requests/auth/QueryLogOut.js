@@ -2,13 +2,14 @@ module.exports = async function QueryLogout(ctx) {
     try {
 
         const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+        
         // Для того чтобы выйти мы должны удалить куки
         // Для этого надо прописать в expires - 01 Jan 1970 00:00:01 GMT
         ctx.cookies.set('jwtToken', '', {
             expires: 0,
             httpOnly: true,
             secure: isSecure,
-            sameSite: isSecure ? 'None' : 'Lax'
+            sameSite: 'None'
         });
 
         // Темерь мы вышли из системы!
