@@ -69,7 +69,7 @@ app.use(koaBody({
 
 // CORS middleware
 app.use(async (ctx, next) => {
-  const origin = ctx.request.headers.origin || 'http://localhost:3000';
+  const origin = 'https://web-chat-backend-s29s.onrender.com' || 'http://localhost:3000';
 
   ctx.set('Access-Control-Allow-Origin', origin);
   ctx.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
