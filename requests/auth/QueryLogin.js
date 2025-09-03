@@ -2,8 +2,6 @@ const { sign } = require('jsonwebtoken');
 
 const bcrypt = require('bcrypt');
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 const updateAttempts = require('../../actions-with-bd/updateAttempts');
 const findUserById = require('../../utils/utility-userid/findUserById');
 
@@ -137,9 +135,9 @@ module.exports = QueryLogin = async (ctx, connection) => {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
             secure: isSecure,
-            sameSite: isSecure ? 'None' : 'Lax'
+            sameSite: 'None'
         });
-        console.log('Cookies теперь работают)', isProduction, ctx.request.secure);
+        console.log('Cookies теперь работают)');
 
         // Теперь мы вошли в систему)
         console.log('Поздравляю с успешной входом в систему!');

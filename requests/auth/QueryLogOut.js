@@ -1,5 +1,3 @@
-const isProduction = process.env.NODE_ENV === 'production';
-
 module.exports = async function QueryLogout(ctx) {
     try {
 
@@ -10,7 +8,7 @@ module.exports = async function QueryLogout(ctx) {
             expires: 0,
             httpOnly: true,
             secure: isSecure,
-            sameSite: isProduction ? 'None' : 'Lax'
+            sameSite: 'None'
         });
 
         // Темерь мы вышли из системы!

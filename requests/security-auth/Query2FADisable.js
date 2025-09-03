@@ -2,8 +2,6 @@ const bcrypt = require('bcrypt');
 
 const findUserById = require('../../utils/utility-userid/findUserById');
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 module.exports = Query2FADisable = async (ctx, connection) => {
     try {
 
@@ -89,7 +87,7 @@ module.exports = Query2FADisable = async (ctx, connection) => {
                     expires: new Date(0),
                     httpOnly: true,
                     secure: isSecure,
-                    sameSite: isProduction ? 'None' : 'Lax'
+                    sameSite: 'None'
                 });
 
                 console.error(`Вы израсходовали все попытки! Пин код не верный(`);
