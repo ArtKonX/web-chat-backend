@@ -44,8 +44,8 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
         // Функция для создания отсутсвующих папкок
         function createTempDirs() {
 
-            const basePath = join(__dirname, '../../public/tempSendMessages/');
-            const tempEncrPath = join(basePath, 'encrypted/');
+            const basePath = path.join(__dirname, '../../public/tempSendMessages/');
+            const tempEncrPath = path.join(basePath, 'encrypted/');
 
             try {
                 // Проверяем и создаем директории
