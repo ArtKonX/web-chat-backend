@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const updateAttempts = require('../../actions-with-bd/updateAttempts');
 const findUserById = require('../../utils/utility-userid/findUserById');
 
-module.exports = QueryLogin = async (ctx, connection) => {
+module.exports = QueryLogin = async (ctx, next, connection) => {
     try {
 
         const { email, password, pin } = ctx.request.body;
@@ -129,13 +129,13 @@ module.exports = QueryLogin = async (ctx, connection) => {
         // secure для передачи только по HTTPS
         // sameSite: 'None' без этого куки не работаю в Хроме
 
-        const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
-
         ctx.cookies.set('jwtToken', token, {
             expires: new Date(Date.now() + 604800000),
             httpOnly: true,
-            secure: isSecure,
-            sameSite: 'Lax'
+            secure: true,
+            sameSite: 'Lax',
+            path: '/',
+            domain: 'localhost'
         });
         console.log('Cookies теперь работают)');
 
@@ -151,6 +151,8 @@ module.exports = QueryLogin = async (ctx, connection) => {
             message: 'Успешный вход в систему!',
             status: 'ok'
         };
+
+        await next();
 
     } catch (err) {
         console.error('Ошибка входа в систему( ', err.message);

@@ -195,13 +195,13 @@ router.post('/check-token', async (ctx, next) => {
   }
 });
 
-router.post('/login', async (ctx) => {
+router.post('/login', async (ctx, next) => {
   let connection;
   try {
 
     connection = await getConnection(pool);
 
-    if (connection) await QueryLogin(ctx, connection);
+    if (connection) await QueryLogin(ctx, next, connection);
   } catch (error) {
     console.error(error);
   } finally {
