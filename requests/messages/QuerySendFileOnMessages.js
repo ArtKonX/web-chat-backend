@@ -49,11 +49,11 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
 
             try {
                 // Проверяем и создаем директории
-                if (!existsSync(basePath)) {
-                    mkdirSync(basePath, { recursive: true });
+                if (!fs.existsSync(basePath)) {
+                    fs.mkdirSync(basePath, { recursive: true });
                 }
-                if (!existsSync(tempEncrPath)) {
-                    mkdirSync(tempEncrPath, { recursive: true });
+                if (!fs.existsSync(tempEncrPath)) {
+                    fs.mkdirSync(tempEncrPath, { recursive: true });
                 }
 
                 return {
