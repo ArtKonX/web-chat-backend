@@ -39,11 +39,7 @@ module.exports = QueryGetLengthNextMessages = async (ctx, connection) => {
 
         messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-        console.log('messages1', messages)
-
         messages = messages.splice(nextOffset, limit).reverse();
-
-        console.log('messages2', messages, nextOffset, limit)
 
         console.log('Успешное получение длины следующих сообщений!');
         ctx.response.status = 201;

@@ -78,7 +78,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
             created_at: new Date(),
             message: message.message,
             sender_id: currentUserId,
-            recipient_id: "0f000000-000c-00d0-00d0-0d0000e00000"
+            recipient_id: userId
         }
 
         const idMessageFromBot = uuidv4()
@@ -95,7 +95,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 id: idMessageFromBot,
                 created_at: new Date(),
                 message: messageTextWelcomeBot,
-                sender_id: "0f000000-000c-00d0-00d0-0d0000e00000",
+                sender_id: userId,
                 recipient_id: currentUserId
             }
 
@@ -138,21 +138,21 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
 
             broadcastMessage({
                 type: 'message', message: messageDataFromUser.message,
-                senderId: currentUserId, recipientId: "0f000000-000c-00d0-00d0-0d0000e00000",
+                senderId: currentUserId, recipientId: userId,
                 idMessage: message.id
             })
             broadcastMessage({
                 type: 'message', message: messageTextWelcomeBot,
-                senderId: "0f000000-000c-00d0-00d0-0d0000e00000", recipientId: currentUserId,
+                senderId: userId, recipientId: currentUserId,
                 idMessage: idMessageFromBot
             })
 
             broadcastMessage({
                 type: 'info-about-chat', lastMessage: messageTextWelcomeBot,
-                senderId: "0f000000-000c-00d0-00d0-0d0000e00000",
+                senderId: userId,
                 recipientId: currentUserId, idMessage: idMessageFromBot,
                 lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                userId: "0f000000-000c-00d0-00d0-0d0000e00000"
+                userId: userId
             })
 
             // Отправляем статус 201 и отправляем массив с сообщениями БОТА и Юзера
@@ -191,28 +191,28 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 id: idMessageFromBot,
                 created_at: new Date(),
                 message: messageFromBot,
-                sender_id: "0f000000-000c-00d0-00d0-0d0000e00000",
+                sender_id: userId,
                 recipient_id: currentUserId
             }
 
             broadcastMessage({
                 type: 'message', message: messageDataFromUser.message,
-                senderId: currentUserId, recipientId: "0f000000-000c-00d0-00d0-0d0000e00000",
+                senderId: currentUserId, recipientId: userId,
                 idMessage: message.id
             });
 
             broadcastMessage({
                 type: 'message', message: messageFromBot,
-                senderId: "0f000000-000c-00d0-00d0-0d0000e00000", recipientId: currentUserId,
+                senderId: userId, recipientId: currentUserId,
                 idMessage: idMessageFromBot
             });
 
             broadcastMessage({
                 type: 'info-about-chat', lastMessage: messageFromBot,
-                senderId: "0f000000-000c-00d0-00d0-0d0000e00000",
+                senderId: userId,
                 recipientId: currentUserId, idMessage: idMessageFromBot,
                 lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                userId: "0f000000-000c-00d0-00d0-0d0000e00000"
+                userId: userId
             });
 
             Promise.all([
@@ -264,28 +264,28 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 id: idMessageFromBot,
                 created_at: new Date(),
                 message: 'Не понял Вас, но, возможно, скоро пойму)',
-                sender_id: "0f000000-000c-00d0-00d0-0d0000e00000",
+                sender_id: userId,
                 recipient_id: currentUserId
             }
 
             broadcastMessage({
                 type: 'message', message: messageDataFromUser.message,
-                senderId: currentUserId, recipientId: "0f000000-000c-00d0-00d0-0d0000e00000",
+                senderId: currentUserId, recipientId: userId,
                 idMessage: message.id
             });
 
             broadcastMessage({
                 type: 'message', message: 'Не понял Вас, но, возможно, скоро пойму)',
-                senderId: "0f000000-000c-00d0-00d0-0d0000e00000", recipientId: currentUserId,
+                senderId: userId, recipientId: currentUserId,
                 idMessage: idMessageFromBot
             });
 
             broadcastMessage({
                 type: 'info-about-chat', lastMessage: 'Не понял Вас, но, возможно, скоро пойму)',
-                senderId: "0f000000-000c-00d0-00d0-0d0000e00000",
+                senderId: userId,
                 recipientId: currentUserId, idMessage: idMessageFromBot,
                 lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                userId: "0f000000-000c-00d0-00d0-0d0000e00000"
+                userId: userId
             });
 
             Promise.all([

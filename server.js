@@ -16,7 +16,7 @@ const QueryLogin = require('./requests/auth/QueryLogin');
 const QueryLogOut = require('./requests/auth/QueryLogOut');
 const QueryGetUser = require('./requests/auth/QueryGetUser');
 const QueryUpdateDataUser = require('./requests/auth/QueryUpdateDataUser');
-const QueryGetPublicKey = require('./requests/auth/QueryGetPublicKey');
+const QueryGetPublicKeys = require('./requests/auth/QueryGetPublicKey');
 
 // Получение статуса юзера
 const GetUserStatus = require('./requests/auth/GetUserStatus');
@@ -67,9 +67,11 @@ app.use(koaBody({
   json: true
 }));
 
+const frontendUrl = process.env.FRONTEND_URL_HTTP || process.env.FRONTEND_URL_HTTPS;
+
 // CORS middleware
 app.use(async (ctx, next) => {
-  const origin = ctx.request.headers.origin || 'https://localhost:3000';
+  const origin = ctx.request.headers.origin || frontendUrl;
 
   console.log('origin', origin)
 
@@ -305,7 +307,7 @@ router.get('/get-user-status', async (ctx, next) => {
   }
 );
 
-router.get('/get-public-key', async (ctx, next) => {
+router.get('/get-public-keys', async (ctx, next) => {
   let connection;
   try {
     connection = await getConnection(pool);
@@ -327,7 +329,7 @@ router.get('/get-public-key', async (ctx, next) => {
       connection = await getConnection(pool);
 
       if (connection) {
-        await QueryGetPublicKey(ctx, connection);
+        await QueryGetPublicKeys(ctx, connection);
       }
     } catch (error) {
       console.error(error)

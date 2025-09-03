@@ -14,8 +14,7 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
 
     try {
         const { file } = ctx.request.files;
-        const { userId } = ctx.request.query;
-        const { currentUserId } = ctx.query;
+        const { userId, currentUserId } = ctx.request.query;
 
         const message = JSON.parse(ctx.request.body.message);
 
