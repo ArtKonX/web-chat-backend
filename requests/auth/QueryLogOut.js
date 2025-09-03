@@ -8,8 +8,7 @@ module.exports = async function QueryLogout(ctx) {
             expires: 0,
             httpOnly: true,
             secure: isSecure,
-            sameSite: 'None',
-            domain: 'web-chat-backend-s29s.onrender.com'
+            sameSite: isSecure ? 'None' : 'Lax'
         });
 
         // Темерь мы вышли из системы!
