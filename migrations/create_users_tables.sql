@@ -32,7 +32,7 @@ CREATE TABLE messages (
     sender_id CHAR(36),
     recipient_id CHAR(36),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    message BLOB NOT NULL,
+    message TEXT NOT NULL,
     file_url TEXT,
     file_type TEXT,
     file_name TEXT,
