@@ -69,7 +69,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             idMessage: message.id
         })
 
-        const differentUserId = messageData.recipient_id === currentUserId ?
+        const differentUserId = messageData.recipient_id === userId ?
             messageData.sender_id :
             messageData.recipient_id
 
