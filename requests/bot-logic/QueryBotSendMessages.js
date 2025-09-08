@@ -192,7 +192,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         return `Давным-давно...
                         ${words.words[Math.floor(Math.random() * words.words.length)]}`
                     case 'лунные песни':
-                        return 'Michael Jackson - ' + songs.Songs[Math.floor(Math.random() * words.words.length)]
+                        return 'Michael Jackson - ' + songs.Songs[Math.floor(Math.random() * songs.Songs.length)]
                     default:
                         return 'Не входит в функции Бота('
                 }
