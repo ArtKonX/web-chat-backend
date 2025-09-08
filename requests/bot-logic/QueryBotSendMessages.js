@@ -86,14 +86,13 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
         // Если нам присылают пустую строку или Привет, Hello, Hi привествуем пользователя
         // и рассказываем про свою основные функции)
         if (!message.message.trim() || ['привет', 'hello', 'hi'].includes(message.message.toLowerCase())) {
-            const messageTextWelcomeBot = `Привет - ${userSafeFind.name}! Тебя приветствует БОТ! Вот мои основные функции, написав одну из них в чате ты получишь ответ: 1)Цитата Волшебника 2)Рандомный курс Доллара 3)Рандомная погода 4)Звездные слова 5)Лунные песни
-            `;
+            const messageTextWelcomeBot = `Привет - ${userSafeFind.name}! Тебя приветствует БОТ! Вот мои основные функции, написав одну из них в чате ты получишь ответ: 1)Цитата Волшебника 2)Рандомный курс Доллара 3)Рандомная погода 4)Звездные слова 5)Лунные песни`;
 
             // Формируем сообщения...
             // От бота и от юзера
             const messageDataFromBot = {
                 id: idMessageFromBot,
-                created_at: new Date(),
+                created_at: new Date().setSeconds(date.getSeconds() + 1),
                 message: messageTextWelcomeBot,
                 sender_id: userId,
                 recipient_id: currentUserId
@@ -189,7 +188,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
 
             const messageDataFromBot = {
                 id: idMessageFromBot,
-                created_at: new Date(),
+                created_at: new Date().setSeconds(date.getSeconds() + 1),
                 message: messageFromBot,
                 sender_id: userId,
                 recipient_id: currentUserId
@@ -262,7 +261,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
         } else {
             const messageDataFromBot = {
                 id: idMessageFromBot,
-                created_at: new Date(),
+                created_at: new Date().setSeconds(date.getSeconds() + 1),
                 message: 'Не понял Вас, но, возможно, скоро пойму)',
                 sender_id: userId,
                 recipient_id: currentUserId
