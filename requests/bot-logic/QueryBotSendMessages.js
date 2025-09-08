@@ -158,11 +158,13 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         idMessage: message.id
                     })
                 } else if (indx === 2) {
-                    broadcastMessage({
-                        type: 'message', message: messageTextWelcomeBot,
-                        senderId: userId, recipientId: currentUserId,
-                        idMessage: idMessageFromBot
-                    })
+                    setTimeout(() => {
+                        broadcastMessage({
+                            type: 'message', message: messageTextWelcomeBot,
+                            senderId: userId, recipientId: currentUserId,
+                            idMessage: idMessageFromBot
+                        })
+                    }, 400)
                 }
             }
 
@@ -222,11 +224,13 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         idMessage: message.id
                     });
                 } else if (indx === 2) {
-                    broadcastMessage({
-                        type: 'message', message: messageFromBot,
-                        senderId: userId, recipientId: currentUserId,
-                        idMessage: idMessageFromBot
-                    });
+                    setTimeout(() => {
+                        broadcastMessage({
+                            type: 'message', message: messageFromBot,
+                            senderId: userId, recipientId: currentUserId,
+                            idMessage: idMessageFromBot
+                        });
+                    }, 400)
                 }
             }
 
@@ -299,11 +303,13 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         idMessage: message.id
                     });
                 } else if (indx === 2) {
-                    broadcastMessage({
-                        type: 'message', message: 'Не понял Вас, но, возможно, скоро пойму)',
-                        senderId: userId, recipientId: currentUserId,
-                        idMessage: idMessageFromBot
-                    });
+                    setTimeout(() => {
+                        broadcastMessage({
+                            type: 'message', message: 'Не понял Вас, но, возможно, скоро пойму)',
+                            senderId: userId, recipientId: currentUserId,
+                            idMessage: idMessageFromBot
+                        });
+                    }, 400)
                 }
             }
 
