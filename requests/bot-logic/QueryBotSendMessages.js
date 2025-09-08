@@ -92,7 +92,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
             // От бота и от юзера
             const messageDataFromBot = {
                 id: idMessageFromBot,
-                created_at: new Date().setSeconds(new Date().getSeconds() + 1),
+                created_at: new Date(new Date().setSeconds(new Date().getSeconds() + 1)),
                 message: messageTextWelcomeBot,
                 sender_id: userId,
                 recipient_id: currentUserId
@@ -188,7 +188,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
 
             const messageDataFromBot = {
                 id: idMessageFromBot,
-                created_at: new Date().setSeconds(new Date().getSeconds() + 1),
+                created_at: new Date(new Date().setSeconds(new Date().getSeconds() + 1)),
                 message: messageFromBot,
                 sender_id: userId,
                 recipient_id: currentUserId
@@ -261,7 +261,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
         } else {
             const messageDataFromBot = {
                 id: idMessageFromBot,
-                created_at: new Date().setSeconds(new Date().getSeconds() + 1),
+                created_at: new Date(new Date().setSeconds(new Date().getSeconds() + 1)),
                 message: 'Не понял Вас, но, возможно, скоро пойму)',
                 sender_id: userId,
                 recipient_id: currentUserId
