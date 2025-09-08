@@ -82,7 +82,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
         })
 
         console.log('Сообщение успешно доставлено)')
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             messageData: messageData,
             message: 'Сообщение успешно доставлено)',

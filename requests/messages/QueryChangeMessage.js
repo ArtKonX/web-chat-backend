@@ -84,7 +84,7 @@ module.exports = QueryChangeMessage = async (ctx, connection) => {
         // Возвращаем статус 201 с успешным обновлением данных
         // и юзером из безопасных данных
         console.log('Данные сообщения успешно обновились!');
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             messageUpdated,
             message: 'Данные сообщения успешно обновились!',

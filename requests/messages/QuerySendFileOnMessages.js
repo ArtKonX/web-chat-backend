@@ -167,10 +167,10 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
         })
 
         // Теперь файл на YD и src файла в сообщениях к переписке
-        // Выставляем статус 201
+        // Выставляем статус 200
 
         console.log('Файл успешно загружен на YD и сообщение отправлено!')
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             messageData: messageData,
             message: 'Файл успешно загружен на YD и сообщение отправлено!',

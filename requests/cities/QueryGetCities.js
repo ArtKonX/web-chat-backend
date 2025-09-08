@@ -8,9 +8,9 @@ module.exports = QueryGetCities = (ctx) => {
         // вернуть все возможные города
         if (!q.trim()) {
 
-            // Статус 201 Все города найдены)
+            // Статус 200 Все города найдены)
             console.log('Успешное получение всех городов');
-            ctx.response.status = 201;
+            ctx.response.status = 200;
             ctx.response.body = {
                 cities: cities,
                 message: 'Успешное получение всех городов',
@@ -29,7 +29,7 @@ module.exports = QueryGetCities = (ctx) => {
             if (findNeededCities.length > 0) {
 
                 console.log('Успешное получение всех городов');
-                ctx.response.status = 201;
+                ctx.response.status = 200;
                 ctx.response.body = {
                     cities: findNeededCities,
                     message: 'Успешное получение всех городов',
@@ -41,7 +41,7 @@ module.exports = QueryGetCities = (ctx) => {
                 // Если нет в массиве ни одного город, то возвращаем
                 // все возвожные города
                 console.log('Успешное получение всех городов');
-                ctx.response.status = 201;
+                ctx.response.status = 200;
                 ctx.response.body = {
                     cities: cities,
                     message: 'Успешное получение всех городов',

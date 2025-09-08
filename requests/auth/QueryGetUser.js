@@ -7,10 +7,10 @@ module.exports = QueryGetUser = async (ctx, connection, next) => {
         // Находим юзера по id
         const findedUserById = await findUserById(ctx.state.userId, 'id', 'users_safe', connection);
 
-        // Если такого нет выкидываем 400
+        // Если такого нет выкидываем 404
         if (findedUserById.message === 'error') {
             console.error(`Такой юзер по id - ${ctx.state.userId} не существует(`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Такой юзер по id - ${ctx.state.userId} не существует(`,
                 status: 'error'
@@ -20,7 +20,7 @@ module.exports = QueryGetUser = async (ctx, connection, next) => {
 
         // Если существует, то отправляем его данные
         console.log('Успешное получение пользователя')
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             user: findedUserById,
             message: 'Успешное получение пользователя!',

@@ -32,10 +32,10 @@ module.exports = Query2FADisable = async (ctx, connection) => {
         const userWarning = await findUserById(id, 'id', 'users_warning', connection);
         const userSafe = await findUserById(id, 'id', 'users_safe', connection);
 
-        // Если мы не нашли индек выбрасываем 400 статус
+        // Если мы не нашли индек выбрасываем 404 статус
         if (!userWarning) {
             console.error(`Юзер с таким id - ${id} не найден!`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Юзер с таким id - ${id} не найден!`,
                 status: 'error'
@@ -153,8 +153,10 @@ module.exports = Query2FADisable = async (ctx, connection) => {
                 );
             })
 
-            // Мы отключили 2FA отправляем 201 код!
+            // Мы отключили 2FA отправляем 200 код!
             console.log('Успешное отключение 2FA!');
+            
+            ctx.response.status = 200;
             ctx.response.body = {
                 data: {
                     user: userSafe

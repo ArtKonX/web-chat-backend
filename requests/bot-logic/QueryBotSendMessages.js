@@ -50,10 +50,10 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
         // для взаимодействия с ботом
         const userSafeFind = await findUserById(currentUserId, 'id', 'users_safe', connection)
 
-        // Если такого нет возвращаем статус 400
+        // Если такого нет возвращаем статус 404
         if (userSafeFind.message === 'error') {
             console.error(`Пользователь с таким id - ${id} не найден!`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Пользователь с таким id - ${id} не найден!`,
                 status: 'error'
@@ -155,9 +155,9 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 userId: userId
             })
 
-            // Отправляем статус 201 и отправляем массив с сообщениями БОТА и Юзера
+            // Отправляем статус 200 и отправляем массив с сообщениями БОТА и Юзера
             console.log('Сообщения успешно доставлены)')
-            ctx.response.status = 201;
+            ctx.response.status = 200;
             ctx.response.body = {
                 messages: [messageDataFromUser, messageDataFromBot],
                 message: 'Сообщения успешно доставлены)',
@@ -251,9 +251,9 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                     );
                 })
             ])
-            // Отправляем статус 201 и отправляем массив с сообщениями БОТА и Юзера
+            // Отправляем статус 200 и отправляем массив с сообщениями БОТА и Юзера
             console.log('Сообщения успешно доставлены)')
-            ctx.response.status = 201;
+            ctx.response.status = 200;
             ctx.response.body = {
                 messages: [messageDataFromUser, messageDataFromBot],
                 message: 'Сообщения успешно доставлены)',
@@ -325,9 +325,9 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 })
             ])
 
-            // Отправляем статус 201 и отправляем массив с сообщениями БОТА и Юзера
+            // Отправляем статус 200 и отправляем массив с сообщениями БОТА и Юзера
             console.log('Сообщения успешно доставлены)')
-            ctx.response.status = 201;
+            ctx.response.status = 200;
             ctx.response.body = {
                 messages: [messageDataFromUser, messageDataFromBot],
                 message: 'Сообщения успешно доставлены)',

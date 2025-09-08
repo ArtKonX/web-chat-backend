@@ -42,7 +42,7 @@ module.exports = QueryGetLengthNextMessages = async (ctx, connection) => {
         messages = messages.splice(nextOffset, limit).reverse();
 
         console.log('Успешное получение длины следующих сообщений!');
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             message: 'Успешное получение длины следующих сообщений!',
             lengthNextMessages: messages.length,

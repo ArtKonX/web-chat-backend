@@ -36,10 +36,10 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
         // Находим юзера в опасных данных
         const findWarningUser = await findUserById(email, 'email', 'users_warning', connection)
 
-        // Если юзера с таким ящиком нет, то выбрасываем статус 400
+        // Если юзера с таким ящиком нет, то выбрасываем статус 404
         if (findWarningUser.message === 'error') {
             console.error(`Пользователь с такой почтой - ${email} не найден!`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Пользователь с такой почтой - ${email} не найден!`,
                 status: 'error'
@@ -52,7 +52,7 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
         // Если пароль неверный, то кидаем статус 400
         if (!isSuccessPassword) {
             console.error('Этот пароль неверный!');
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Этот пароль неверный!`,
                 status: 'error'
@@ -77,7 +77,7 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
             const isSuccessFA2 = bcrypt.compareSync(pin, findWarningUser.fa2_pin);
 
             // Если неправильный pin то уменьшаем число попыток на одну
-            // и выкидываем 400 статус
+            // и выкидываем 500 статус
             if (!isSuccessFA2 && findWarningUser.fa2_attempts > 0) {
                 updateAttempts(connection, findWarningUser.id, findWarningUser.fa2_attempts - 1)
                 console.error(`Пин код не верный!`);
@@ -138,12 +138,12 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
             secure: isSecure,
             sameSite: 'None'
         });
-        
+
         console.log('Cookies теперь работают)');
 
         // Теперь мы вошли в систему)
         console.log('Поздравляю с успешной входом в систему!');
-        ctx.status = 201;
+        ctx.status = 200;
         ctx.body = {
             user: {
                 id: findWarningUser.id,

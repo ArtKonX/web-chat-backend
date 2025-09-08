@@ -30,7 +30,7 @@ module.exports = sendFileOnYD = async ({ file, dirForTempSaveFile, ctx }) => {
         // Если его нет выкидываем статус 400
         if (!dirForTempSaveFile) {
             console.error(`Нет временного пути файла для загрузки файла на YD!`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: 'Нет временного пути файла для загрузки файла на YD!',
                 status: 'error'

@@ -29,10 +29,10 @@ module.exports = Query2FATurnOn = async (ctx, connection) => {
                 status: 'error'
             };
         } else {
-            // Если уже подключена 2FA то отправляем 400 код
+            // Если уже подключена 2FA то отправляем 404 код
             if (userWarning.fa2_enabled) {
                 console.error(`Уже 2FA подключена!`);
-                ctx.response.status = 400;
+                ctx.response.status = 404;
                 ctx.response.body = {
                     message: `Уже 2FA подключена!`,
                     status: 'error'
@@ -89,9 +89,9 @@ module.exports = Query2FATurnOn = async (ctx, connection) => {
                 // Находим юзера в безопасных данных
                 const usersSafe = await findUserById(id, 'users_safe', connection);
 
-                // Отдаем 201 код и данные с пользователем и пином
+                // Отдаем 200 код и данные с пользователем и пином
                 console.log(`Успешное подключение 2FA!`);
-                ctx.response.status = 201;
+                ctx.response.status = 200;
                 ctx.response.body = {
                     data: {
                         user: usersSafe,

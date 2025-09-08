@@ -37,10 +37,10 @@ module.exports = QueryUpdateCity = async (ctx, connection) => {
             );
         });
 
-        // Если пользователь не найден возвращаем 400 статус код
+        // Если пользователь не найден возвращаем 404 статус код
         if (!findWarningUser) {
             console.error(`Юзер с этим id - ${id} не найден`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Юзер с этим id - ${id} не найден`,
                 status: 'error'
@@ -71,9 +71,9 @@ module.exports = QueryUpdateCity = async (ctx, connection) => {
 
         const findSafeUser = await findUserById(id, 'id', 'users_safe', connection);
 
-        // Если все пошло по плану, то возвращаем 201 код
+        // Если все пошло по плану, то возвращаем 200 код
         console.log('Поздравляю с успешным изменением города)');
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             user: findSafeUser,
             message: 'Успешное изменение города)',

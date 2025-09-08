@@ -22,7 +22,7 @@ module.exports = QueryFindUsers = async (ctx, connection) => {
         if (!q.trim()) {
 
             console.log('Бот успешно получен!')
-            ctx.response.status = 201;
+            ctx.response.status = 200;
             ctx.response.body = {
                 users: botUserList,
                 message: `Бот успешно получен!`,
@@ -44,11 +44,11 @@ module.exports = QueryFindUsers = async (ctx, connection) => {
                 );
             });
 
-            // Если что-то находим возвращаем со статусом 201
+            // Если что-то находим возвращаем со статусом 200
 
             if (usersFinded.length > 0) {
                 console.log('Пользователи успешно получены!')
-                ctx.response.status = 201;
+                ctx.response.status = 200;
                 ctx.response.body = {
                     users: usersFinded,
                     message: `Пользователи успешно получены!`,
@@ -58,7 +58,7 @@ module.exports = QueryFindUsers = async (ctx, connection) => {
                 // Если нет возвращаем БОТ'а
 
                 console.log('Бот успешно получен!')
-                ctx.response.status = 201;
+                ctx.response.status = 200;
                 ctx.response.body = {
                     users: botUserList,
                     message: `Бот успешно получен!`,

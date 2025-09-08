@@ -14,10 +14,10 @@ module.exports = GetUserStatus = async (ctx, connection) => {
             );
         });
 
-        // Если такого нет выкидываем 400
+        // Если такого нет выкидываем 404
         if (!user) {
             console.error(`Такой юзер по id - ${userId} не существует(`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Такой юзер по id - ${userId} не существует(`,
                 status: 'error'
@@ -27,7 +27,7 @@ module.exports = GetUserStatus = async (ctx, connection) => {
 
         // Если существует, то отправляем его данные
         console.log('Успешное получение пользователя')
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             user,
             message: 'Успешное получение статуса пользователя!',

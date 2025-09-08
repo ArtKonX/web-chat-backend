@@ -126,7 +126,7 @@ module.exports = QueryInfoAboutDialogues = async (ctx, connection) => {
         const sortedDataListAboutDialogues = dataListAboutDialogues.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
         console.log('Поздравляю с успешным получением диалогов)');
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             data: sortedDataListAboutDialogues,
             message: 'Поздравляю с успешным получением диалогов)',

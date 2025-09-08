@@ -54,7 +54,7 @@ module.exports = QueryGetMessages = async (ctx, connection) => {
         // и возвращаем пустой массив
         if (!messages.length) {
             console.log('Сообщений нет( ');
-            ctx.response.status = 201;
+            ctx.response.status = 200;
             ctx.response.body = {
                 message: 'Сообщений нет!',
                 messages: [],
@@ -146,7 +146,7 @@ module.exports = QueryGetMessages = async (ctx, connection) => {
 
         if (allMessagesWithEcryptedDataFiles.length) {
             console.log('Успешное получение сообщений!');
-            ctx.response.status = 201;
+            ctx.response.status = 200;
             ctx.response.body = {
                 message: 'Сообщений получены!',
                 messages: allMessagesWithEcryptedDataFiles,

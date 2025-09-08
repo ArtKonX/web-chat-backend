@@ -79,10 +79,10 @@ module.exports = QueryDeleteMessage = async (ctx, connection) => {
             recipientId: message.recipient_id
         })
 
-        // Возвращаем статус 201 с успешным обновлением данных
+        // Возвращаем статус 200 с успешным обновлением данных
         // и юзером из безопасных данных
         console.log('Данные сообщения успешно удалены!');
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             message: 'Данные сообщения успешно удалены!',
             status: 'ok'

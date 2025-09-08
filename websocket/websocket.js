@@ -1,5 +1,4 @@
 const WebSocket = require('ws');
-const getTimeAndDate = require('../utils/getTimeAndDate');
 
 // хранит экземпляр WS
 let wssInstance = null;
@@ -136,7 +135,7 @@ function broadcastMessage({ type: type, message: message,
                         message,
                         sender_id: senderId,
                         recipient_id: recipientId,
-                        created_at: getTimeAndDate(),
+                        created_at: new Date(),
                         file_url: file && file.url,
                         file_type: file && file.type,
                         file_name: file && file.name,

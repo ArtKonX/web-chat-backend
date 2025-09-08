@@ -37,7 +37,7 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
         // Если мы их не находим то отправляем 400 статус
         if (findWarningUser.message === 'error') {
             console.error(`Пользователь с таким ${id} не найден!`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `Пользователь с таким ${id} не найден!`,
                 status: 'error'
@@ -120,7 +120,7 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
         // Если нет данных для обновления, то тогда возвращаем
         // статус 400
         if (Object.keys(updatedUserData).length === 0) {
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: 'Нет данных для обновления',
                 status: 'error'
@@ -160,7 +160,7 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
         // Возвращаем статус 201 с успешным обновлением данных
         // и юзером из безопасных данных
         console.log('Данные успешно обновились!');
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             user: updatedDataUser,
             message: 'Данные успешно обновились!',

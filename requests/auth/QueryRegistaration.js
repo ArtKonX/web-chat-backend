@@ -46,7 +46,7 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
         // Если встречается, то с одим и тем же email'ом регистрация не возможна
         if (duplicateEmailUser) {
             console.error(`У кого-то этот email - ${email} уже существует!`);
-            ctx.response.status = 400;
+            ctx.response.status = 404;
             ctx.response.body = {
                 message: `У кого-то этот email - ${email} уже существует!`,
                 status: 'error'
@@ -146,7 +146,7 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
 
         // Теперь мы в системе)
         console.log('Поздравляю с успешной регистрацией!');
-        ctx.response.status = 201;
+        ctx.response.status = 200;
         ctx.response.body = {
             user: {
                 id: id,
