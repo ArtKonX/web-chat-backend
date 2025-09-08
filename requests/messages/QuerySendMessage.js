@@ -7,6 +7,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
     try {
         const { userId, currentUserId } = ctx.request.query;
         const message = JSON.parse(ctx.request.body.message);
+        const actualUserId = ctx.state.userId;
 
         let fields = Object.entries({ userId, currentUserId, message });
         let notFields = [];
@@ -69,7 +70,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             idMessage: message.id
         })
 
-        const differentUserId = messageData.recipient_id === currentUserId ?
+        const differentUserId = messageData.recipient_id === actualUserId ?
             messageData.sender_id :
             messageData.recipient_id
 
@@ -92,7 +93,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
         await new Promise((_, reject) => {
             connection.query(
                 'SELECT * FROM users_safe WHERE id = ?',
-                [currentUserId === messageData.sender_id ? messageData.recipient_id : messageData.sender_id],
+                [actualUserId === messageData.sender_id ? messageData.recipient_id : messageData.sender_id],
                 (err, res) => {
                     if (err) return reject(err);
 
