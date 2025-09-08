@@ -69,7 +69,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             idMessage: message.id
         })
 
-        const differentUserId = messageData.recipient_id === userId ?
+        const differentUserId = messageData.recipient_id === currentUserId ?
             messageData.sender_id :
             messageData.recipient_id
 
@@ -92,7 +92,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
         await new Promise((_, reject) => {
             connection.query(
                 'SELECT * FROM users_safe WHERE id = ?',
-                [userId === messageData.sender_id ? messageData.recipient_id : messageData.sender_id],
+                [currentUserId === messageData.sender_id ? messageData.recipient_id : messageData.sender_id],
                 (err, res) => {
                     if (err) return reject(err);
 
