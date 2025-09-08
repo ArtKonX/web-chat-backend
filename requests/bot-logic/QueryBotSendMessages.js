@@ -23,8 +23,9 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
         const { userId, currentUserId } = ctx.request.query;
 
         const message = JSON.parse(ctx.request.body.message);
+        const action = JSON.parse(ctx.request.body.action);
 
-        let fields = Object.entries({ currentUserId, userId, message });
+        let fields = Object.entries({ currentUserId, userId, message, action });
         let notFields = [];
 
         // Перебор всех полей и добавление в notFields
@@ -60,6 +61,10 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
             };
         }
 
+        // Создаем массив для трех действий в сообщениях,
+        // чтобы они выполнялись последовательно при переборе
+        const messagesLengthArray = new Array(3).fill(0);
+
         const messages = await new Promise((res, rej) => {
             connection.query(
                 'SELECT * FROM messages WHERE ((sender_id = ?) AND (recipient_id = ?)) OR ((sender_id = ?) AND (recipient_id = ?)) ORDER BY created_at',
@@ -85,7 +90,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
 
         // Если нам присылают пустую строку или Привет, Hello, Hi привествуем пользователя
         // и рассказываем про свою основные функции)
-        if (!message.message.trim() || ['привет', 'hello', 'hi'].includes(message.message.toLowerCase())) {
+        if (!action.trim() || ['привет', 'hello', 'hi'].includes(action.toLowerCase())) {
             const messageTextWelcomeBot = `Привет - ${userSafeFind.name}! Тебя приветствует БОТ! Вот мои основные функции, написав одну из них в чате ты получишь ответ: 1)Цитата Волшебника 2)Рандомный курс Доллара 3)Рандомная погода 4)Звездные слова 5)Лунные песни`;
 
             // Формируем сообщения...
@@ -135,24 +140,31 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 })
             ])
 
-            broadcastMessage({
-                type: 'message', message: messageDataFromUser.message,
-                senderId: currentUserId, recipientId: userId,
-                idMessage: message.id
-            })
-            broadcastMessage({
-                type: 'message', message: messageTextWelcomeBot,
-                senderId: userId, recipientId: currentUserId,
-                idMessage: idMessageFromBot
-            })
-
-            broadcastMessage({
-                type: 'info-about-chat', lastMessage: messageTextWelcomeBot,
-                senderId: userId,
-                recipientId: currentUserId, idMessage: idMessageFromBot,
-                lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                userId: userId
-            })
+            // Перебор элементов для последовательной отправки действий
+            // через WS
+            for (const [indx, _] of messagesLengthArray.entries()) {
+                if (indx === 0) {
+                    broadcastMessage({
+                        type: 'info-about-chat', lastMessage: messageTextWelcomeBot,
+                        senderId: userId,
+                        recipientId: currentUserId, idMessage: idMessageFromBot,
+                        lengthMessages: messages.length + 2, nameSender: 'БОТ',
+                        userId: userId
+                    })
+                } else if (indx === 1) {
+                    broadcastMessage({
+                        type: 'message', message: messageDataFromUser.message,
+                        senderId: currentUserId, recipientId: userId,
+                        idMessage: message.id
+                    })
+                } else {
+                    broadcastMessage({
+                        type: 'message', message: messageTextWelcomeBot,
+                        senderId: userId, recipientId: currentUserId,
+                        idMessage: idMessageFromBot
+                    })
+                }
+            }
 
             // Отправляем статус 200 и отправляем массив с сообщениями БОТА и Юзера
             console.log('Сообщения успешно доставлены)')
@@ -162,7 +174,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 message: 'Сообщения успешно доставлены)',
                 status: 'ok'
             }
-        } else if (['цитата волшебника', 'рандомный курс доллара', 'рандомная погода', 'звездные слова', 'лунные песни'].includes(message.message.toLowerCase())) {
+        } else if (['цитата волшебника', 'рандомный курс доллара', 'рандомная погода', 'звездные слова', 'лунные песни'].includes(action.toLowerCase())) {
             // Если сработала какая-то функция бота то мы должны ее выполнить!
 
             // Функция для выдачи цитаты бота
@@ -184,7 +196,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 }
             }
 
-            const messageFromBot = getQuote(message.message.toLowerCase());
+            const messageFromBot = getQuote(action.toLowerCase());
 
             const messageDataFromBot = {
                 id: idMessageFromBot,
@@ -194,25 +206,29 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 recipient_id: currentUserId
             }
 
-            broadcastMessage({
-                type: 'message', message: messageDataFromUser.message,
-                senderId: currentUserId, recipientId: userId,
-                idMessage: message.id
-            });
-
-            broadcastMessage({
-                type: 'message', message: messageFromBot,
-                senderId: userId, recipientId: currentUserId,
-                idMessage: idMessageFromBot
-            });
-
-            broadcastMessage({
-                type: 'info-about-chat', lastMessage: messageFromBot,
-                senderId: userId,
-                recipientId: currentUserId, idMessage: idMessageFromBot,
-                lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                userId: userId
-            });
+            for (const [indx, _] of messagesLengthArray.entries()) {
+                if (indx === 0) {
+                    broadcastMessage({
+                        type: 'info-about-chat', lastMessage: messageFromBot,
+                        senderId: userId,
+                        recipientId: currentUserId, idMessage: idMessageFromBot,
+                        lengthMessages: messages.length + 2, nameSender: 'БОТ',
+                        userId: userId
+                    });
+                } else if (indx === 1) {
+                    broadcastMessage({
+                        type: 'message', message: messageDataFromUser.message,
+                        senderId: currentUserId, recipientId: userId,
+                        idMessage: message.id
+                    });
+                } else {
+                    broadcastMessage({
+                        type: 'message', message: messageFromBot,
+                        senderId: userId, recipientId: currentUserId,
+                        idMessage: idMessageFromBot
+                    });
+                }
+            }
 
             Promise.all([
                 new Promise((resolve, reject) => {
@@ -267,25 +283,29 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                 recipient_id: currentUserId
             }
 
-            broadcastMessage({
-                type: 'message', message: messageDataFromUser.message,
-                senderId: currentUserId, recipientId: userId,
-                idMessage: message.id
-            });
-
-            broadcastMessage({
-                type: 'message', message: 'Не понял Вас, но, возможно, скоро пойму)',
-                senderId: userId, recipientId: currentUserId,
-                idMessage: idMessageFromBot
-            });
-
-            broadcastMessage({
-                type: 'info-about-chat', lastMessage: 'Не понял Вас, но, возможно, скоро пойму)',
-                senderId: userId,
-                recipientId: currentUserId, idMessage: idMessageFromBot,
-                lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                userId: userId
-            });
+            for (const [indx, _] of messagesLengthArray.entries()) {
+                if (indx === 0) {
+                    broadcastMessage({
+                        type: 'info-about-chat', lastMessage: 'Не понял Вас, но, возможно, скоро пойму)',
+                        senderId: userId,
+                        recipientId: currentUserId, idMessage: idMessageFromBot,
+                        lengthMessages: messages.length + 2, nameSender: 'БОТ',
+                        userId: userId
+                    });
+                } else if (indx === 1) {
+                    broadcastMessage({
+                        type: 'message', message: messageDataFromUser.message,
+                        senderId: currentUserId, recipientId: userId,
+                        idMessage: message.id
+                    });
+                } else {
+                    broadcastMessage({
+                        type: 'message', message: 'Не понял Вас, но, возможно, скоро пойму)',
+                        senderId: userId, recipientId: currentUserId,
+                        idMessage: idMessageFromBot
+                    });
+                }
+            }
 
             Promise.all([
                 new Promise((resolve, reject) => {
