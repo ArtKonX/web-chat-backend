@@ -115,7 +115,7 @@ const getWebSocketServer = (server, connection) => {
 function broadcastMessage({ type: type, message: message,
     senderId: senderId, recipientId: recipientId,
     idMessage: idMessage, file: file, lengthMessages,
-    userId, nameSender, lastMessage, status }) {
+    userId, nameSender, lastMessage, status, colorProfile }) {
 
     if (wssInstance) {
         // перебираем всех пользователей
@@ -172,7 +172,9 @@ function broadcastMessage({ type: type, message: message,
                         sender_id: senderId,
                         recipient_id: recipientId,
                         nameSender,
-                        userId
+                        userId,
+                        status,
+                        colorProfile
                     }))
                 }
             }

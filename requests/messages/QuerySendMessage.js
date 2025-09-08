@@ -63,22 +63,50 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             );
         });
 
-
-        const user = await findUserById(userId, 'id', 'users_safe', connection);
-
         broadcastMessage({
             type: 'message', message: messageData.message,
             senderId: messageData.sender_id, recipientId: messageData.recipient_id,
             idMessage: message.id
         })
 
-        broadcastMessage({
-            type: 'info-about-chat', lastMessage: messageData.message,
-            senderId: messageData.sender_id,
-            recipientId: messageData.recipient_id,
-            idMessage: message.id, lengthMessages: messages.length,
-            nameSender: user.name,
-            userId: userId
+        const differentUserId = messageData.recipient_id === userId ?
+            messageData.sender_id :
+            messageData.recipient_id
+
+        const [user] = await new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM users_statuses WHERE id = ?',
+                [differentUserId],
+                (err, results) => {
+                    if (err) return reject(err);
+                    resolve(results);
+                }
+            );
+        });
+
+        const dataUser = await findUserById(differentUserId, 'id', 'users_safe', connection);
+
+        // Промис с инфо
+        // по диалогу юзера из безопасных
+        // данных
+        await new Promise((_, reject) => {
+            connection.query(
+                'SELECT * FROM users_safe WHERE id = ?',
+                [userId === messageData.sender_id ? messageData.recipient_id : messageData.sender_id],
+                (err, res) => {
+                    if (err) return reject(err);
+
+                    broadcastMessage({
+                        type: 'info-about-chat', lastMessage: messageData.message,
+                        senderId: messageData.sender_id,
+                        recipientId: messageData.recipient_id,
+                        idMessage: message.id, lengthMessages: messages.length,
+                        nameSender: res[0]?.name,
+                        userId: differentUserId,
+                        colorProfile: dataUser?.color_profile,
+                        status: user?.status
+                    })
+                })
         })
 
         console.log('Сообщение успешно доставлено)')

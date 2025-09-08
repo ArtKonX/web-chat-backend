@@ -106,9 +106,7 @@ module.exports = QueryInfoAboutDialogues = async (ctx, connection) => {
                                 sender_id: lastDataMessage.sender_id,
                                 recipient_id: lastDataMessage.recipient_id,
                                 nameSender: res[0]?.name,
-                                userId: lastDataMessage.recipient_id === userId ?
-                                    lastDataMessage.sender_id :
-                                    lastDataMessage.recipient_id,
+                                userId: differentUserId,
                                 created_at: lastDataMessage.created_at,
                                 colorProfile: dataUser.color_profile,
                                 status: user?.status
