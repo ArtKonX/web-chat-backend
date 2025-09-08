@@ -157,7 +157,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         senderId: currentUserId, recipientId: userId,
                         idMessage: message.id
                     })
-                } else {
+                } else if (indx === 2) {
                     broadcastMessage({
                         type: 'message', message: messageTextWelcomeBot,
                         senderId: userId, recipientId: currentUserId,
@@ -221,7 +221,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         senderId: currentUserId, recipientId: userId,
                         idMessage: message.id
                     });
-                } else {
+                } else if (indx === 2) {
                     broadcastMessage({
                         type: 'message', message: messageFromBot,
                         senderId: userId, recipientId: currentUserId,
@@ -298,7 +298,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         senderId: currentUserId, recipientId: userId,
                         idMessage: message.id
                     });
-                } else {
+                } else if (indx === 2) {
                     broadcastMessage({
                         type: 'message', message: 'Не понял Вас, но, возможно, скоро пойму)',
                         senderId: userId, recipientId: currentUserId,
