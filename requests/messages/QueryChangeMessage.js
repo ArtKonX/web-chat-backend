@@ -6,7 +6,7 @@ const findUserById = require('../../utils/utility-userid/findUserById');
 
 module.exports = QueryChangeMessage = async (ctx, connection) => {
     try {
-        const { messageId, userId } = ctx.request.query;
+        const { messageId } = ctx.request.query;
         const message = ctx.request.body.message;
 
         let fields = Object.entries({ messageId, message });

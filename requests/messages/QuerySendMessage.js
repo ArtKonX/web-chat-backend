@@ -3,6 +3,8 @@ const { broadcastMessage } = require('../../websocket/websocket');
 
 const findUserById = require('../../utils/utility-userid/findUserById');
 
+const getStatuses = require('../../actions-with-bd/getStatuses')
+
 module.exports = QuerySendMessage = async (ctx, connection) => {
     try {
         const { userId, currentUserId } = ctx.request.query;
@@ -69,20 +71,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             idMessage: message.id
         })
 
-        const dataStatuses = await Promise.all([userId, currentUserId].map(async id => {
-            const [dataStatus] = await new Promise((resolve, reject) => {
-                connection.query(
-                    'SELECT * FROM users_statuses WHERE id = ?',
-                    [id],
-                    (err, results) => {
-                        if (err) return reject(err);
-                        resolve(results);
-                    }
-                );
-            });
-
-            return dataStatus
-        }))
+        const dataStatuses = await getStatuses(userId, currentUserId, connection);
 
         // Для отправки сообщения через WS для правильного отображения
         // отправителя в диалогах

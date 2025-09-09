@@ -1,9 +1,11 @@
 const { broadcastMessage } = require('../../websocket/websocket');
 const findUserById = require('../../utils/utility-userid/findUserById');
 
+const getStatuses = require('../../actions-with-bd/getStatuses');
+
 module.exports = QueryDeleteMessage = async (ctx, connection) => {
     try {
-        const { messageId, userId } = ctx.request.query;
+        const { messageId } = ctx.request.query;
 
         let fields = Object.entries({ messageId });
         let notFields = [];
@@ -60,16 +62,42 @@ module.exports = QueryDeleteMessage = async (ctx, connection) => {
             );
         });
 
-        // Находим юзера для получения имени
-        const user = await findUserById(messages[messages.length - 1].sender_id, 'id', 'users_safe', connection);
+        // Для отправки сообщения через WS для правильного отображения
+        // отправителя в диалогах
+        const userIdData = await findUserById(messages[messages.length - 1].sender_id, 'id', 'users_safe', connection);
+        const currentUserIdData = await findUserById(messages[messages.length - 1].recipient_id, 'id', 'users_safe', connection);
+
+        const dataStatuses = await getStatuses(messages[messages.length - 1].sender_id, messages[messages.length - 1].recipient_id, connection);
 
         broadcastMessage({
             type: 'info-about-chat', lastMessage: messages[messages.length - 1].message,
             senderId: messages[messages.length - 1].sender_id,
             recipientId: messages[messages.length - 1].recipient_id,
             idMessage: messages[messages.length - 1].id, lengthMessages: messages.length,
-            nameSender: messages[messages.length - 1].sender_id === userId ? 'Вы' : user.name,
-            userId: userId
+            nameSender: {
+                [userIdData.id]:
+                    { name: userIdData.name },
+                [currentUserIdData.id]:
+                    { name: currentUserIdData.name }
+            },
+            userId: {
+                [userIdData.id]:
+                    { id: userIdData.id },
+                [currentUserIdData.id]:
+                    { id: currentUserIdData.id }
+            },
+            colorProfile: {
+                [userIdData.id]:
+                    { color_profile: userIdData.color_profile },
+                [currentUserIdData.id]:
+                    { color_profile: currentUserIdData.color_profile }
+            },
+            status: {
+                [dataStatuses[0].id]:
+                    { status: dataStatuses[0].status },
+                [dataStatuses[1].id]:
+                    { status: dataStatuses[1].status }
+            }
         })
 
         broadcastMessage({
