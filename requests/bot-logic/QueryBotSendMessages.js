@@ -183,6 +183,12 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                                 { id: userSafeFind.id }
                         },
                         colorProfile: {
+                            [userIdData.id]:
+                                { color_profile: userIdData.color_profile },
+                            [userSafeFind.id]:
+                                { color_profile: userSafeFind.color_profile }
+                        },
+                        status: {
                             [dataStatuses[0].id]:
                                 { status: dataStatuses[0].status },
                             [dataStatuses[1].id]:
