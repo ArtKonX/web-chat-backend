@@ -47,9 +47,29 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
             };
         }
 
+
+        // Для отправки сообщения через WS для правильного отображения
+        // отправителя в диалогах
+        const userIdData = await findUserById(userId, 'id', 'users_safe', connection);
+
         // Находим информацию о юзере в безопасных данных
         // для взаимодействия с ботом
         const userSafeFind = await findUserById(currentUserId, 'id', 'users_safe', connection)
+
+        const dataStatuses = await Promise.all([userId, currentUserId].map(async id => {
+            const [dataStatus] = await new Promise((resolve, reject) => {
+                connection.query(
+                    'SELECT * FROM users_statuses WHERE id = ?',
+                    [id],
+                    (err, results) => {
+                        if (err) return reject(err);
+                        resolve(results);
+                    }
+                );
+            });
+
+            return dataStatus
+        }))
 
         // Если такого нет возвращаем статус 404
         if (userSafeFind.message === 'error') {
@@ -144,12 +164,30 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
             // через WS
             for (const [indx, _] of messagesLengthArray.entries()) {
                 if (indx === 0) {
+
                     broadcastMessage({
                         type: 'info-about-chat', lastMessage: messageTextWelcomeBot,
                         senderId: userId,
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                        userId: userId
+                        nameSender: {
+                            [userIdData.id]:
+                                { name: userIdData.name },
+                            [userSafeFind.id]:
+                                { name: userSafeFind.name }
+                        },
+                        userId: {
+                            [userIdData.id]:
+                                { id: userIdData.id },
+                            [userSafeFind.id]:
+                                { id: userSafeFind.id }
+                        },
+                        colorProfile: {
+                            [userIdData.id]:
+                                { color_profile: userIdData.color_profile },
+                            [userSafeFind.id]:
+                                { color_profile: userSafeFind.color_profile }
+                        }
                     })
                 } else if (indx === 1) {
                     broadcastMessage({
@@ -215,7 +253,30 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         senderId: userId,
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                        userId: userId
+                        nameSender: {
+                            [userIdData.id]:
+                                { name: userIdData.name },
+                            [userSafeFind.id]:
+                                { name: userSafeFind.name }
+                        },
+                        userId: {
+                            [userIdData.id]:
+                                { id: userIdData.id },
+                            [userSafeFind.id]:
+                                { id: userSafeFind.id }
+                        },
+                        colorProfile: {
+                            [userIdData.id]:
+                                { color_profile: userIdData.color_profile },
+                            [userSafeFind.id]:
+                                { color_profile: userSafeFind.color_profile }
+                        },
+                        status: {
+                            [dataStatuses[0].id]:
+                                { status: dataStatuses[0].status },
+                            [dataStatuses[1].id]:
+                                { status: dataStatuses[1].status }
+                        }
                     });
                 } else if (indx === 1) {
                     broadcastMessage({
@@ -294,7 +355,24 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         senderId: userId,
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2, nameSender: 'БОТ',
-                        userId: userId
+                        nameSender: {
+                            [userIdData.id]:
+                                { name: userIdData.name },
+                            [userSafeFind.id]:
+                                { name: userSafeFind.name }
+                        },
+                        userId: {
+                            [userIdData.id]:
+                                { id: userIdData.id },
+                            [userSafeFind.id]:
+                                { id: userSafeFind.id }
+                        },
+                        colorProfile: {
+                            [userIdData.id]:
+                                { color_profile: userIdData.color_profile },
+                            [userSafeFind.id]:
+                                { color_profile: userSafeFind.color_profile }
+                        }
                     });
                 } else if (indx === 1) {
                     broadcastMessage({

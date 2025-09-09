@@ -135,12 +135,54 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             });
         }
 
+        const dataStatuses = await Promise.all([userId, currentUserId].map(async id => {
+            const [dataStatus] = await new Promise((resolve, reject) => {
+                connection.query(
+                    'SELECT * FROM users_statuses WHERE id = ?',
+                    [id],
+                    (err, results) => {
+                        if (err) return reject(err);
+                        resolve(results);
+                    }
+                );
+            });
+
+            return dataStatus
+        }))
+
+        // Для отправки сообщения через WS для правильного отображения
+        // отправителя в диалогах
+        const userIdData = await findUserById(userId, 'id', 'users_safe', connection);
+        const currentUserIdData = await findUserById(currentUserId, 'id', 'users_safe', connection);
+
         broadcastMessage({
             type: 'info-about-chat', lastMessage: `Файл: ${file.originalFilename} \n ${message.message}`,
             senderId: currentUserId, recipientId: userId,
             idMessage: message.id, lengthMessages: messages.length,
-            nameSender: user.name,
-            userId: userId
+            nameSender: {
+                [userIdData.id]:
+                    { name: userIdData.name },
+                [currentUserIdData.id]:
+                    { name: currentUserIdData.name }
+            },
+            userId: {
+                [userIdData.id]:
+                    { id: userIdData.id },
+                [currentUserIdData.id]:
+                    { id: currentUserIdData.id }
+            },
+            colorProfile: {
+                [userIdData.id]:
+                    { color_profile: userIdData.color_profile },
+                [currentUserIdData.id]:
+                    { color_profile: currentUserIdData.color_profile }
+            },
+            status: {
+                [dataStatuses[0].id]:
+                    { status: dataStatuses[0].status },
+                [dataStatuses[1].id]:
+                    { status: dataStatuses[1].status }
+            }
         })
 
         new Promise((resolve, reject) => {
