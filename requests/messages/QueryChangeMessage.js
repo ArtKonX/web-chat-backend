@@ -2,6 +2,8 @@ const { broadcastMessage } = require('../../websocket/websocket');
 
 const getStatuses = require('../../actions-with-bd/getStatuses');
 
+const findUserById = require('../../utils/utility-userid/findUserById');
+
 module.exports = QueryChangeMessage = async (ctx, connection) => {
     try {
         const { messageId, userId } = ctx.request.query;
@@ -69,7 +71,7 @@ module.exports = QueryChangeMessage = async (ctx, connection) => {
             const currentUserIdData = await findUserById(messages[messages.length - 1].recipient_id, 'id', 'users_safe', connection);
 
             const dataStatuses = await getStatuses(userIdData.id, currentUserIdData.id, connection);
-            
+
             if (dataStatuses) {
 
                 broadcastMessage({
