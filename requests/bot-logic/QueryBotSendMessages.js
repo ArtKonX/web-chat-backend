@@ -169,7 +169,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         type: 'info-about-chat', lastMessage: messageTextWelcomeBot,
                         senderId: userId,
                         recipientId: currentUserId, idMessage: idMessageFromBot,
-                        lengthMessages: messages.length + 2, nameSender: 'БОТ',
+                        lengthMessages: messages.length + 2,
                         nameSender: {
                             [userIdData.id]:
                                 { name: userIdData.name },
@@ -252,7 +252,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         type: 'info-about-chat', lastMessage: messageFromBot,
                         senderId: userId,
                         recipientId: currentUserId, idMessage: idMessageFromBot,
-                        lengthMessages: messages.length + 2, nameSender: 'БОТ',
+                        lengthMessages: messages.length + 2,
                         nameSender: {
                             [userIdData.id]:
                                 { name: userIdData.name },
@@ -354,7 +354,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         type: 'info-about-chat', lastMessage: 'Не понял Вас, но, возможно, скоро пойму)',
                         senderId: userId,
                         recipientId: currentUserId, idMessage: idMessageFromBot,
-                        lengthMessages: messages.length + 2, nameSender: 'БОТ',
+                        lengthMessages: messages.length + 2,
                         nameSender: {
                             [userIdData.id]:
                                 { name: userIdData.name },
@@ -368,6 +368,12 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                                 { id: userSafeFind.id }
                         },
                         colorProfile: {
+                            [userIdData.id]:
+                                { color_profile: userIdData.color_profile },
+                            [userSafeFind.id]:
+                                { color_profile: userSafeFind.color_profile }
+                        },
+                        status: {
                             [dataStatuses[0].id]:
                                 { status: dataStatuses[0].status },
                             [dataStatuses[1].id]:
