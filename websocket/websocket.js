@@ -171,10 +171,10 @@ function broadcastMessage({ type: type, message: message,
                         lengthMessages,
                         sender_id: senderId,
                         recipient_id: recipientId,
-                        nameSender,
-                        userId,
-                        status,
-                        colorProfile
+                        nameSender: nameSender[client.userId].name,
+                        userId: userId[client.userId].id,
+                        status: status[client.userId].status,
+                        colorProfile: colorProfile[client.userId].color_profile
                     }))
                 }
             }

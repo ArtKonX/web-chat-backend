@@ -7,7 +7,6 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
     try {
         const { userId, currentUserId } = ctx.request.query;
         const message = JSON.parse(ctx.request.body.message);
-        const actualUserId = ctx.state.userId;
 
         let fields = Object.entries({ userId, currentUserId, message });
         let notFields = [];
@@ -70,44 +69,55 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             idMessage: message.id
         })
 
-        const differentUserId = messageData.recipient_id === actualUserId ?
-            messageData.sender_id :
-            messageData.recipient_id
+        const dataStatuses = await all.Promise([userId, currentUserId].map(async id => {
+            const [dataStatus] = await new Promise((resolve, reject) => {
+                connection.query(
+                    'SELECT * FROM users_statuses WHERE id = ?',
+                    [id],
+                    (err, results) => {
+                        if (err) return reject(err);
+                        resolve(results);
+                    }
+                );
+            });
 
-        const [user] = await new Promise((resolve, reject) => {
-            connection.query(
-                'SELECT * FROM users_statuses WHERE id = ?',
-                [differentUserId],
-                (err, results) => {
-                    if (err) return reject(err);
-                    resolve(results);
-                }
-            );
-        });
+            return dataStatus
+        }))
 
-        const dataUser = await findUserById(differentUserId, 'id', 'users_safe', connection);
+        // Для отправки сообщения через WS для правильного отображения
+        // отправителя в диалогах
+        const userIdData = await findUserById(userId, 'id', 'users_safe', connection);
+        const currentUserIdData = await findUserById(currentUserId, 'id', 'users_safe', connection);
 
-        // Промис с инфо
-        // по диалогу юзера из безопасных
-        // данных
-        await new Promise((_, reject) => {
-            connection.query(
-                'SELECT * FROM users_safe WHERE id = ?',
-                [actualUserId === messageData.sender_id ? messageData.recipient_id : messageData.sender_id],
-                (err, res) => {
-                    if (err) return reject(err);
-
-                    broadcastMessage({
-                        type: 'info-about-chat', lastMessage: messageData.message,
-                        senderId: messageData.sender_id,
-                        recipientId: messageData.recipient_id,
-                        idMessage: message.id, lengthMessages: messages.length,
-                        nameSender: res[0]?.name,
-                        userId: differentUserId,
-                        colorProfile: dataUser?.color_profile,
-                        status: user?.status
-                    })
-                })
+        broadcastMessage({
+            type: 'info-about-chat', lastMessage: messageData.message,
+            senderId: messageData.sender_id,
+            recipientId: messageData.recipient_id,
+            idMessage: message.id, lengthMessages: messages.length,
+            nameSender: {
+                [userIdData.id]:
+                    { name: userIdData.name },
+                [currentUserIdData.id]:
+                    { name: currentUserIdData.name }
+            },
+            userId: {
+                [userIdData.id]:
+                    { id: userIdData.id },
+                [currentUserIdData.id]:
+                    { id: currentUserIdData.id }
+            },
+            colorProfile: {
+                [userIdData.id]:
+                    { color_profile: userIdData.color_profile },
+                [currentUserIdData.id]:
+                    { color_profile: currentUserIdData.color_profile }
+            },
+            status: {
+                [dataStatuses[0].id]:
+                    { status: dataStatuses[0].status },
+                [dataStatuses[1].id]:
+                    { status: dataStatuses[1].status }
+            }
         })
 
         console.log('Сообщение успешно доставлено)')
