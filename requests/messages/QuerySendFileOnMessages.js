@@ -18,7 +18,7 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
 
         const message = JSON.parse(ctx.request.body.message);
 
-        let fields = Object.entries({ file, userId, currentUserId, message });
+        let fields = Object.entries({ file, userId, currentUserId });
         let notFields = [];
 
         // Перебор всех полей и добавление в notFields
