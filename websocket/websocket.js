@@ -165,16 +165,20 @@ function broadcastMessage({ type: type, message: message,
                 // тип info-about-chat для сайд-бара
                 // с информацией вывода последних сообщений
                 if (type === 'info-about-chat') {
+                    // id должен быть другого пользователя
+                    const differentId = Object.keys(nameSender)[0] === client.userId ?
+                        Object.keys(nameSender)[1] : Object.keys(nameSender)[0]
+
                     client.send(JSON.stringify({
                         type: 'info-about-chat',
                         lastMessage,
                         lengthMessages,
                         sender_id: senderId,
                         recipient_id: recipientId,
-                        nameSender: nameSender[client.userId].name,
-                        userId: userId[client.userId].id,
-                        status: status[client.userId].status,
-                        colorProfile: colorProfile[client.userId].color_profile
+                        nameSender: nameSender[differentId].name,
+                        userId: userId[differentId].id,
+                        status: status[differentId].status,
+                        colorProfile: colorProfile[differentId].color_profile
                     }))
                 }
             }

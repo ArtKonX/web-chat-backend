@@ -69,7 +69,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             idMessage: message.id
         })
 
-        const dataStatuses = await all.Promise([userId, currentUserId].map(async id => {
+        const dataStatuses = await Promise.all([userId, currentUserId].map(async id => {
             const [dataStatus] = await new Promise((resolve, reject) => {
                 connection.query(
                     'SELECT * FROM users_statuses WHERE id = ?',
