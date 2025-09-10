@@ -10,6 +10,8 @@ const { broadcastMessage } = require('../../websocket/websocket');
 // Для нахождения пользователя по id
 const findUserById = require('../../utils/utility-userid/findUserById');
 
+const getStatuses = require('../../actions-with-bd/getStatuses');
+
 module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
 
     try {
@@ -121,9 +123,6 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             );
         });
 
-        // получаем юзера по id
-        const user = await findUserById(userId, 'id', 'users_safe', connection);
-
         if (fs.existsSync(tempDirMessagesFiles)) {
             broadcastMessage({
                 type: 'message', message: `Файл: ${file.originalFilename} \n ${message.message}`, senderId: currentUserId, recipientId: userId, idMessage: message.id, file: {
@@ -135,20 +134,7 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             });
         }
 
-        const dataStatuses = await Promise.all([userId, currentUserId].map(async id => {
-            const [dataStatus] = await new Promise((resolve, reject) => {
-                connection.query(
-                    'SELECT * FROM users_statuses WHERE id = ?',
-                    [id],
-                    (err, results) => {
-                        if (err) return reject(err);
-                        resolve(results);
-                    }
-                );
-            });
-
-            return dataStatus
-        }))
+        const dataStatuses = await getStatuses(userId, currentUserId, connection);
 
         // Для отправки сообщения через WS для правильного отображения
         // отправителя в диалогах

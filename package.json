@@ -9,7 +9,7 @@
   "author": "ArtKonX",
   "license": "ISC",
   "engines": {
-    "node": ">=16.0.0 <=24.3.0"
+    "node": ">=16.0.0 <=24.7.0"
   },
   "dependencies": {
     "@koa/cors": "^5.0.0",

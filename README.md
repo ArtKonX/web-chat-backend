@@ -22,7 +22,7 @@ git clone https://github.com/ArtKonX/web-chat-backend.git
 yarn install
 ```
 
-3. Создайте файл .env.local в корне проекта
+3. Создайте файл .env в корне проекта
 ```
 JWT_SECRET=
 O_Auth=

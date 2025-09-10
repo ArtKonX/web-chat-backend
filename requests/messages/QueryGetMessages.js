@@ -142,7 +142,7 @@ module.exports = QueryGetMessages = async (ctx, connection) => {
         }))
 
         // Если мы прошли этот алгоритм, то возвращаем сообщение
-        // со статусом 201
+        // со статусом 200
 
         if (allMessagesWithEcryptedDataFiles.length) {
             console.log('Успешное получение сообщений!');

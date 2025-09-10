@@ -17,6 +17,8 @@ const words = require('../../data/words.json');
 // Навзвания песен Майкла Джексона
 const songs = require('../../data/songs.json');
 
+const getStatuses = require('../../actions-with-bd/getStatuses');
+
 module.exports = QueryBotSendMessages = async (ctx, connection) => {
     try {
 
@@ -56,20 +58,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
         // для взаимодействия с ботом
         const userSafeFind = await findUserById(currentUserId, 'id', 'users_safe', connection)
 
-        const dataStatuses = await Promise.all([userId, currentUserId].map(async id => {
-            const [dataStatus] = await new Promise((resolve, reject) => {
-                connection.query(
-                    'SELECT * FROM users_statuses WHERE id = ?',
-                    [id],
-                    (err, results) => {
-                        if (err) return reject(err);
-                        resolve(results);
-                    }
-                );
-            });
-
-            return dataStatus
-        }))
+        const dataStatuses = await getStatuses(userId, currentUserId, connection);
 
         // Если такого нет возвращаем статус 404
         if (userSafeFind.message === 'error') {
