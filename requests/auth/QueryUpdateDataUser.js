@@ -62,21 +62,7 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
             // Если включена проверяем пин
             const isSuccessFA2 = bcrypt.compareSync(pin, findWarningUser.fa2_pin);
 
-            // Если неправильный pin то уменьшаем число попыток на одну
-            // и выкидываем 400 статус
-            if (!isSuccessFA2 && findWarningUser.fa2_attempts > 0) {
-                updateAttempts(connection, findWarningUser.id, findWarningUser.fa2_attempts - 1)
-                console.error(`Пин код не верный!`);
-                ctx.response.status = 500;
-                ctx.response.body = {
-                    data: {
-                        attempt: findWarningUser.fa2_attempts - 1
-                    },
-                    message: `Пин код не верный!`,
-                    status: 'error'
-                };
-                return
-            } else if (!isSuccessFA2 && findWarningUser.fa2_attempts <= 0) {
+            if (findWarningUser.fa2_attempts <= 1 && !isSuccessFA2) {
                 // Если все попытки израсходованы, то оставляем в числе попыток 0
                 // на 2 дня и после возвращаем 5 для того чтобы злоумышленник не смог зайти
                 console.error(`Вы израсходовали все попытки! Пин код не верный(`);
@@ -101,6 +87,22 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
                 setTimeout(() => {
                     updateAttempts(connection, findWarningUser.id, 5)
                 }, 2 * 24 * 60 * 60 * 1000);
+                return
+            }
+
+            // Если неправильный pin то уменьшаем число попыток на одну
+            // и выкидываем 400 статус
+            if (!isSuccessFA2 && findWarningUser.fa2_attempts > 0) {
+                updateAttempts(connection, findWarningUser.id, findWarningUser.fa2_attempts - 1)
+                console.error(`Пин код не верный!`);
+                ctx.response.status = 500;
+                ctx.response.body = {
+                    data: {
+                        attempt: findWarningUser.fa2_attempts - 1
+                    },
+                    message: `Пин код не верный!`,
+                    status: 'error'
+                };
                 return
             }
         }

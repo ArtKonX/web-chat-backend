@@ -14,7 +14,7 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
         // }
 
         const authorization = ctx.headers.authorization;
-        const token = authorization.split(' ')[1];
+        const token = authorization.split(' ')[1].replaceAll('"', '');
 
         // Если его нет отправляем статус 500
         if (!token) {
@@ -41,7 +41,6 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
                 if (decoded.userId) {
                     ctx.state.userId = decoded.userId;
 
-                    console.log('decoded.userId', decoded.userId)
                     // Мы успешно проверили токен,
                     // отправляем статус 200
                     console.log('Успешная проверка токена!');

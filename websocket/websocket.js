@@ -15,6 +15,7 @@ const getWebSocketServer = (server, connection) => {
 
             // обработчик сообщений
             ws.on('message', async (message) => {
+                console.log('message',  JSON.parse(message))
                 try {
 
                     // распарсим входящее сообщение

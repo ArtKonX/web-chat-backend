@@ -78,7 +78,7 @@ module.exports = Query2FADisable = async (ctx, connection) => {
             // Если мы израсходовали все попытки, то значит
             // это злоумышленник, который получил доступ к аккаунту
             // выходим из аккаунта
-            if (userWarning.fa2_attempts <= 0) {
+            if (userWarning.fa2_attempts <= 1) {
                 // Для того чтобы выйти мы должны удалить куки
                 // Для этого надо прописать в expires - 01 Jan 1970 00:00:01 GMT
                 // const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
