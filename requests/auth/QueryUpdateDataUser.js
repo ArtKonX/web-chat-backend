@@ -82,18 +82,21 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
                 console.error(`Вы израсходовали все попытки! Пин код не верный(`);
                 ctx.response.status = 500;
                 ctx.response.body = {
+                    data: {
+                        succesPinCode: 'error'
+                    },
                     message: `Вы израсходовали все попытки! Пин код не верный(`,
                     status: 'error'
                 };
 
-                const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+                // const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
 
-                ctx.cookies.set('jwtToken', '', {
-                    expires: new Date(0),
-                    httpOnly: true,
-                    secure: isSecure,
-                    sameSite: 'None'
-                });
+                // ctx.cookies.set('jwtToken', '', {
+                //     expires: new Date(0),
+                //     httpOnly: true,
+                //     secure: isSecure,
+                //     sameSite: 'None'
+                // });
 
                 setTimeout(() => {
                     updateAttempts(connection, findWarningUser.id, 5)

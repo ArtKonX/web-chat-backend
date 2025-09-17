@@ -96,6 +96,9 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
                 console.error(`Вы израсходовали все попытки! Пин код не верный(`);
                 ctx.response.status = 500;
                 ctx.response.body = {
+                    data: {
+                        succesPinCode: 'error'
+                    },
                     message: `Вы израсходовали все попытки! Пин код не верный(`,
                     status: 'error'
                 };
@@ -132,14 +135,14 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
 
         // const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
 
-        ctx.cookies.set('jwtToken', token, {
-            expires: new Date(Date.now() + 604800000),
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none'
-        });
+        // ctx.cookies.set('jwtToken', token, {
+        //     expires: new Date(Date.now() + 604800000),
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: 'none'
+        // });
 
-        console.log('Cookies теперь работают)');
+        // console.log('Cookies теперь работают)');
 
         // Теперь мы вошли в систему)
         console.log('Поздравляю с успешной входом в систему!');
@@ -148,7 +151,8 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
             user: {
                 id: findWarningUser.id,
                 name: findWarningUser.name,
-                email: findWarningUser.email
+                email: findWarningUser.email,
+                token
             },
             message: 'Успешный вход в систему!',
             status: 'ok'

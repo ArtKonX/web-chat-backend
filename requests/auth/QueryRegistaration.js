@@ -127,7 +127,7 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
             expiresIn
         });
 
-        const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+        // const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
 
         // Формируем печеньки в браузере)
         // Куки на 7 дней ровно столько действителен токен
@@ -135,14 +135,14 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
         // secure для передачи только по HTTPS
         // sameSite: 'None' без этого куки не работаю в Хроме
 
-        ctx.cookies.set('jwtToken', token, {
-            expires: new Date(Date.now() + 604800000),
-            secure: isSecure,
-            httpOnly: true,
-            sameSite: 'None'
-        });
+        // ctx.cookies.set('jwtToken', token, {
+        //     expires: new Date(Date.now() + 604800000),
+        //     secure: isSecure,
+        //     httpOnly: true,
+        //     sameSite: 'None'
+        // });
 
-        console.log('Cookies теперь работают)');
+        // console.log('Cookies теперь работают)');
 
         // Теперь мы в системе)
         console.log('Поздравляю с успешной регистрацией!');
@@ -151,7 +151,8 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
             user: {
                 id: id,
                 name: name,
-                email: email
+                email: email,
+                token
             },
             message: 'Успешная регистрация)',
             status: 'ok'

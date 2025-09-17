@@ -81,19 +81,22 @@ module.exports = Query2FADisable = async (ctx, connection) => {
             if (userWarning.fa2_attempts <= 0) {
                 // Для того чтобы выйти мы должны удалить куки
                 // Для этого надо прописать в expires - 01 Jan 1970 00:00:01 GMT
-                const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+                // const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
 
-                ctx.cookies.set('jwtToken', '', {
-                    expires: new Date(0),
-                    httpOnly: true,
-                    secure: isSecure,
-                    sameSite: 'None'
-                });
+                // ctx.cookies.set('jwtToken', '', {
+                //     expires: new Date(0),
+                //     httpOnly: true,
+                //     secure: isSecure,
+                //     sameSite: 'None'
+                // });
 
                 console.error(`Вы израсходовали все попытки! Пин код не верный(`);
                 ctx.response.status = 500;
                 ctx.response.body = {
                     attempt: 0,
+                    data: {
+                        succesPinCode: 'error'
+                    },
                     message: `Вы израсходовали все попытки! Пин код не верный(`,
                     status: 'error'
                 };
@@ -155,7 +158,7 @@ module.exports = Query2FADisable = async (ctx, connection) => {
 
             // Мы отключили 2FA отправляем 200 код!
             console.log('Успешное отключение 2FA!');
-            
+
             ctx.response.status = 200;
             ctx.response.body = {
                 data: {

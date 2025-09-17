@@ -6,12 +6,15 @@ const jwt = require('jsonwebtoken');
 module.exports = async function authCheckTokenMiddleware(ctx, next) {
     try {
 
-        let token = null;
+        // let token = null;
 
         // Проверяем токен в кукис
-        if (ctx.cookies.get('jwtToken')) {
-            token = ctx.cookies.get('jwtToken');
-        }
+        // if (ctx.cookies.get('jwtToken')) {
+        //     token = ctx.cookies.get('jwtToken');
+        // }
+
+        const authorization = ctx.headers.authorization;
+        const token = authorization.split(' ')[1];
 
         // Если его нет отправляем статус 500
         if (!token) {
@@ -55,7 +58,7 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
         }
     } catch (err) {
         console.error('Время токена истекло( Возьмите новый! ' + err.message);
-        ctx.status = 401;
+        ctx.status = 400;
         ctx.response.body = {
             message: 'Время токена истекло( Возьмите новый! ' + err.message,
             status: 'error'
