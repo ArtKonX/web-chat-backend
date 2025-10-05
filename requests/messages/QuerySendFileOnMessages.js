@@ -144,7 +144,7 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
         broadcastMessage({
             type: 'info-about-chat', lastMessage: `Файл: ${file.originalFilename} \n ${message.message}`,
             senderId: currentUserId, recipientId: userId,
-            idMessage: message.id, lengthMessages: messages.length,
+            idMessage: message.id, lengthMessages: messages.length + 1,
             nameSender: {
                 [userIdData.id]:
                     { name: userIdData.name },
