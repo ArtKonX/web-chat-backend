@@ -60,7 +60,7 @@ INSERT INTO users_safe (
     '1999-12-31 23:59:59.581',
     'bot@ya.ru',
     'БОТ',
-    'Т-Чат',
+    'K-Чат',
     "#2a86c7"
 );
 
@@ -82,7 +82,7 @@ INSERT INTO users_warning (
     'bot@ya.ru',
     'БОТ',
     'nullnullnullnull1234',
-    'Т-Чат',
+    'K-Чат',
     "bg-purple-400/50",
     FALSE,
     NULL,

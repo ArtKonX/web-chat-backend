@@ -15,7 +15,7 @@ const getWebSocketServer = (server, connection) => {
 
             // обработчик сообщений
             ws.on('message', async (message) => {
-                console.log('message',  JSON.parse(message))
+                console.log('message', JSON.parse(message))
                 try {
 
                     // распарсим входящее сообщение
@@ -167,20 +167,38 @@ function broadcastMessage({ type: type, message: message,
                 // с информацией вывода последних сообщений
                 if (type === 'info-about-chat') {
                     // id должен быть другого пользователя
-                    const differentId = Object.keys(nameSender)[0] === client.userId ?
-                        Object.keys(nameSender)[1] : Object.keys(nameSender)[0]
+                    if (nameSender) {
+                        const differentId = Object.keys(nameSender)[0] === client.userId ?
+                            Object.keys(nameSender)[1] : Object.keys(nameSender)[0]
 
-                    client.send(JSON.stringify({
-                        type: 'info-about-chat',
-                        lastMessage,
-                        lengthMessages,
-                        sender_id: senderId,
-                        recipient_id: recipientId,
-                        nameSender: nameSender[differentId].name,
-                        userId: userId[differentId].id,
-                        status: status[differentId].status,
-                        colorProfile: colorProfile[differentId].color_profile
-                    }))
+                        client.send(JSON.stringify({
+                            type: 'info-about-chat',
+                            lastMessage,
+                            lengthMessages,
+                            sender_id: senderId,
+                            recipient_id: recipientId,
+                            nameSender: nameSender[differentId] ? nameSender[differentId].name : null,
+                            userId: userId[differentId] ? userId[differentId].id : null,
+                            status: status[differentId] ? status[differentId].status : null,
+                            colorProfile: colorProfile[differentId] ? colorProfile[differentId].color_profile : null
+                        }))
+                    } else {
+                        const differentId = senderId === client.userId ?
+                            recipientId : senderId
+
+                        client.send(JSON.stringify({
+                            type: 'info-about-chat',
+                            lastMessage: null,
+                            lengthMessages,
+                            idMessage,
+                            sender_id: senderId,
+                            recipient_id: recipientId,
+                            nameSender: null,
+                            userId: differentId,
+                            status: null,
+                            colorProfile: null
+                        }))
+                    }
                 }
             }
 
