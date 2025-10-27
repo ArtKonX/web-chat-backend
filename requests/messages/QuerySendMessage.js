@@ -82,6 +82,7 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             type: 'info-about-chat', lastMessage: messageData.message,
             senderId: messageData.sender_id,
             recipientId: messageData.recipient_id,
+            listDates: messages.map(item => item.created_at),
             idMessage: message.id, lengthMessages: messages.length,
             nameSender: {
                 [userIdData.id]:

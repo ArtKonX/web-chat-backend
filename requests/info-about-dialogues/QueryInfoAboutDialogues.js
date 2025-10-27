@@ -103,13 +103,15 @@ module.exports = QueryInfoAboutDialogues = async (ctx, connection) => {
                             resolve({
                                 lastMessage: lastDataMessage.message,
                                 lengthMessages: message.length,
+                                dateMessage: lastDataMessage.created_at,
                                 sender_id: lastDataMessage.sender_id,
                                 recipient_id: lastDataMessage.recipient_id,
                                 nameSender: res[0]?.name,
                                 userId: differentUserId,
                                 created_at: lastDataMessage.created_at,
                                 colorProfile: dataUser.color_profile,
-                                status: user?.status
+                                status: user?.status,
+                                listDates: message.map(item => item.created_at)
                             })
                         }
                     );

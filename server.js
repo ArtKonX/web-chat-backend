@@ -17,6 +17,7 @@ const QueryLogOut = require('./requests/auth/QueryLogOut');
 const QueryGetUser = require('./requests/auth/QueryGetUser');
 const QueryUpdateDataUser = require('./requests/auth/QueryUpdateDataUser');
 const QueryGetPublicKeys = require('./requests/auth/QueryGetPublicKey');
+const QueryRestoringAccess = require('./requests/auth/QueryRestoringAccess');
 
 // Получение статуса юзера
 const GetUserStatus = require('./requests/auth/GetUserStatus');
@@ -262,6 +263,40 @@ router.patch('/update-user', async (ctx, next) => {
 
       if (connection) {
         await QueryUpdateDataUser(ctx, connection);
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  }
+);
+
+router.patch('/update-public-key', async (ctx, next) => {
+  let connection;
+  try {
+    connection = await getConnection(pool);
+
+    if (connection) {
+      await authCheckTokenMiddleware(ctx, next, connection, pool);
+    }
+  } catch (error) {
+    console.error(error)
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+},
+  async (ctx) => {
+    let connection;
+    try {
+      connection = await getConnection(pool);
+
+      if (connection) {
+        await QueryRestoringAccess(ctx, connection);
       }
     } catch (error) {
       console.error(error)

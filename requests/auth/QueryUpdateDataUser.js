@@ -142,22 +142,61 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
 
         dataValuesForDB.push(id);
 
-        // Изменяем данные сразу для двух таблиц
-        await Promise.all(['users_warning', 'users_safe'].map((async (table) => {
-            return await new Promise((res, rej) => {
-                connection.query(
-                    `UPDATE ${table} SET ${dataKeysForDB} WHERE id = ?`,
-                    dataValuesForDB,
-                    (err, result) => {
-                        if (err) {
-                            return rej(err)
-                        };
+        // Если есть только имя
+        if (!updatedUserData.password) {
 
-                        res(result);
-                    }
-                );
-            })
-        })))
+            // Изменяем данные сразу для двух таблиц
+            await Promise.all(['users_warning', 'users_safe'].map((async (table) => {
+                return await new Promise((res, rej) => {
+                    connection.query(
+                        `UPDATE ${table} SET ${dataKeysForDB} WHERE id = ?`,
+                        dataValuesForDB,
+                        (err, result) => {
+                            if (err) {
+                                return rej(err)
+                            };
+
+                            res(result);
+                        }
+                    );
+                })
+            })))
+        } else {
+            if (updatedUserData.name) {
+                await Promise.all(['users_warning', 'users_safe'].map((async (table) => {
+                    return await new Promise((res, rej) => {
+                        connection.query(
+                            `UPDATE ${table} SET name = ? WHERE id = ?`,
+                            [name, id],
+                            (err, result) => {
+                                if (err) {
+                                    return rej(err)
+                                };
+
+                                res(result);
+                            }
+                        );
+                    })
+                })))
+            }
+            if (updatedUserData.password) {
+                await Promise.all(['users_warning'].map((async (table) => {
+                    return await new Promise((res, rej) => {
+                        connection.query(
+                            `UPDATE ${table} SET password = ? WHERE id = ?`,
+                            [updatedUserData.password, id],
+                            (err, result) => {
+                                if (err) {
+                                    return rej(err)
+                                };
+
+                                res(result);
+                            }
+                        );
+                    })
+                })))
+            }
+        }
 
         // Получение обновленных данных
         const updatedDataUser = await findUserById(id, 'users_safe', connection)

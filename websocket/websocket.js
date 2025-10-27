@@ -15,7 +15,7 @@ const getWebSocketServer = (server, connection) => {
 
             // обработчик сообщений
             ws.on('message', async (message) => {
-                console.log('message', JSON.parse(message))
+
                 try {
 
                     // распарсим входящее сообщение
@@ -116,7 +116,7 @@ const getWebSocketServer = (server, connection) => {
 function broadcastMessage({ type: type, message: message,
     senderId: senderId, recipientId: recipientId,
     idMessage: idMessage, file: file, lengthMessages,
-    userId, nameSender, lastMessage, status, colorProfile }) {
+    userId, nameSender, lastMessage, status, colorProfile, listDates }) {
 
     if (wssInstance) {
         // перебираем всех пользователей
@@ -126,6 +126,7 @@ function broadcastMessage({ type: type, message: message,
             // пользователь с id является или
             // отправителем или получателем, то
             // отправляем
+          
             if (client.readyState === WebSocket.OPEN &&
                 (client.userId === senderId || client.userId === recipientId)) {
                 // Тип message для всех сообщений
@@ -176,6 +177,7 @@ function broadcastMessage({ type: type, message: message,
                             lastMessage,
                             lengthMessages,
                             sender_id: senderId,
+                            listDates,
                             recipient_id: recipientId,
                             nameSender: nameSender[differentId] ? nameSender[differentId].name : null,
                             userId: userId[differentId] ? userId[differentId].id : null,
@@ -194,6 +196,7 @@ function broadcastMessage({ type: type, message: message,
                             sender_id: senderId,
                             recipient_id: recipientId,
                             nameSender: null,
+                            listDates,
                             userId: differentId,
                             status: null,
                             colorProfile: null

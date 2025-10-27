@@ -52,8 +52,6 @@ module.exports = QueryDeleteMessage = async (ctx, connection) => {
                 );
             });
 
-            console.log('messageList', messageList)
-
             const messages = await new Promise((resolve, reject) => {
                 connection.query(
                     'SELECT * FROM messages WHERE ((sender_id = ?) AND (recipient_id = ?)) OR ((recipient_id = ?) AND (sender_id = ?)) ORDER BY created_at',
@@ -64,8 +62,6 @@ module.exports = QueryDeleteMessage = async (ctx, connection) => {
                     }
                 );
             });
-
-            console.log('messages', messages)
 
             if (messages && messages.length) {
                 // Для отправки сообщения через WS для правильного отображения
@@ -80,6 +76,7 @@ module.exports = QueryDeleteMessage = async (ctx, connection) => {
                     senderId: messages[messages.length - 1].sender_id,
                     recipientId: messages[messages.length - 1].recipient_id,
                     idMessage: messages[messages.length - 1].id, lengthMessages: messages.length,
+                    listDates: messages.map(item => item.created_at),
                     nameSender: {
                         [userIdData.id]:
                             { name: userIdData.name },
@@ -106,10 +103,10 @@ module.exports = QueryDeleteMessage = async (ctx, connection) => {
                     }
                 })
             } else {
-                console.log('messageList[0]', messageList[0])
                 broadcastMessage({
                     type: 'info-about-chat', lastMessage: null,
                     senderId: messageList[0].sender_id,
+                    listDates: messages.map(item => item.created_at),
                     recipientId: messageList[0].recipient_id,
                     idMessage: messageList[0].id, lengthMessages: 0,
                     nameSender: null,

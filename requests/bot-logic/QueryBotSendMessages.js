@@ -157,6 +157,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                     broadcastMessage({
                         type: 'info-about-chat', lastMessage: messageTextWelcomeBot,
                         senderId: userId,
+                        listDates: messages.map(item => item.created_at),
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2,
                         nameSender: {
@@ -246,6 +247,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                     broadcastMessage({
                         type: 'info-about-chat', lastMessage: messageFromBot,
                         senderId: userId,
+                        listDates: messages.map(item => item.created_at),
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2,
                         nameSender: {
@@ -350,6 +352,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         senderId: userId,
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2,
+                        listDates: messages.map(item => item.created_at),
                         nameSender: {
                             [userIdData.id]:
                                 { name: userIdData.name },

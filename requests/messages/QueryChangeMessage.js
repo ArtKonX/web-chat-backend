@@ -79,6 +79,7 @@ module.exports = QueryChangeMessage = async (ctx, connection) => {
                     senderId: messages[messages.length - 1].sender_id,
                     recipientId: messages[messages.length - 1].recipient_id,
                     idMessage: messages[messages.length - 1].id, lengthMessages: messages.length,
+                    listDates: messages.map(item => item.created_at),
                     nameSender: {
                         [userIdData.id]:
                             { name: userIdData.name },

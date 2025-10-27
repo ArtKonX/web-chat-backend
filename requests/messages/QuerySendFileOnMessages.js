@@ -151,6 +151,7 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
                 [currentUserIdData.id]:
                     { name: currentUserIdData.name }
             },
+            listDates: messages.map(item => item.created_at),
             userId: {
                 [userIdData.id]:
                     { id: userIdData.id },

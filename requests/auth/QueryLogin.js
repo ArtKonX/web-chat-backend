@@ -47,7 +47,7 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
         }
 
         // Проверяем пароль...
-        const isSuccessPassword = bcrypt.compare(password, findWarningUser.password);
+        const isSuccessPassword = await bcrypt.compare(password, findWarningUser.password);
 
         // Если пароль неверный, то кидаем статус 400
         if (!isSuccessPassword) {
@@ -57,6 +57,8 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
                 message: `Этот пароль неверный!`,
                 status: 'error'
             };
+
+            return
         }
 
         // Теперь у пользователя может быть включена 2FA
