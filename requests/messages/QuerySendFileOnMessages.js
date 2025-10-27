@@ -104,6 +104,7 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             message: `Файл: ${file.originalFilename} \n ${message.message}`,
             authorId: currentUserId,
             userRecipient: userId,
+            created_at: new Date(),
             file: {
                 url: fileTempPath,
                 type: metaDataFile.mimetype,
@@ -123,23 +124,35 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             );
         });
 
-        if (fs.existsSync(tempDirMessagesFiles)) {
-            broadcastMessage({
-                type: 'message', message: `Файл: ${file.originalFilename} \n ${message.message}`, senderId: currentUserId, recipientId: userId, idMessage: message.id, file: {
-                    url: fileTempPath,
-                    type: metaDataFile.mimetype,
-                    name: metaDataFile.originalFilename,
-                    size: metaDataFile.size
-                }
-            });
-        }
-
         const dataStatuses = await getStatuses(userId, currentUserId, connection);
 
         // Для отправки сообщения через WS для правильного отображения
         // отправителя в диалогах
         const userIdData = await findUserById(userId, 'id', 'users_safe', connection);
         const currentUserIdData = await findUserById(currentUserId, 'id', 'users_safe', connection);
+
+        new Promise((resolve, reject) => {
+            connection.query(
+                'INSERT INTO messages (id, sender_id, recipient_id, created_at, message, file_url, file_type, file_name, file_size, iv) ' +
+                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [
+                    messageData.id,
+                    messageData.authorId,
+                    messageData.userRecipient,
+                    messageData.created_at,
+                    messageData.message,
+                    hrefForFileOnYD,
+                    metaDataFile.mimetype,
+                    metaDataFile.originalFilename,
+                    metaDataFile.size,
+                    metaDataFile.iv
+                ],
+                (err, result) => {
+                    if (err) return reject(err);
+                    resolve(result);
+                }
+            );
+        })
 
         broadcastMessage({
             type: 'info-about-chat', lastMessage: `Файл: ${file.originalFilename} \n ${message.message}`,
@@ -172,28 +185,16 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             }
         })
 
-        new Promise((resolve, reject) => {
-            connection.query(
-                'INSERT INTO messages (id, sender_id, recipient_id, created_at, message, file_url, file_type, file_name, file_size, iv) ' +
-                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [
-                    messageData.id,
-                    messageData.authorId,
-                    messageData.userRecipient,
-                    messageData.created_at,
-                    messageData.message,
-                    hrefForFileOnYD,
-                    metaDataFile.mimetype,
-                    metaDataFile.originalFilename,
-                    metaDataFile.size,
-                    metaDataFile.iv
-                ],
-                (err, result) => {
-                    if (err) return reject(err);
-                    resolve(result);
+        if (fs.existsSync(tempDirMessagesFiles)) {
+            broadcastMessage({
+                type: 'message', message: `Файл: ${file.originalFilename} \n ${message.message}`, senderId: currentUserId, recipientId: userId, idMessage: message.id, file: {
+                    url: fileTempPath,
+                    type: metaDataFile.mimetype,
+                    name: metaDataFile.originalFilename,
+                    size: metaDataFile.size
                 }
-            );
-        })
+            });
+        }
 
         // Теперь файл на YD и src файла в сообщениях к переписке
         // Выставляем статус 200
