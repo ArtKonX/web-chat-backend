@@ -864,8 +864,8 @@ const cleanupFiles = () => {
           // сколько секунд прошло с момента создания файла
           const fileAge = (Date.now() - fileStat.birthtimeMs) / 1000;
 
-          // если больше 10, то удаляем
-          if (fileAge > 10) {
+          // если больше 15, то удаляем
+          if (fileAge > 15) {
             fs.unlinkSync(filePath);
           }
         });

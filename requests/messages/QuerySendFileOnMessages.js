@@ -83,34 +83,26 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             size: file.size
         }
 
-        // Теперь есть все, чтобы загрузить файл в облако и получить ссылку на него!
-        // Это мы и делаем...
-        const { href: hrefForFileOnYD, message: hrefYDMessage } = await sendFileOnYD({ file, dirForTempSaveFile: encryptedFilePath, ctx })
+        const dataStatuses = await getStatuses(userId, currentUserId, connection);
 
-        if (hrefYDMessage !== 'success') {
-            throw new Error('Ошибка отправки файла на Яндекс Диск')
-        }
-
-        // Если у нас есть href то все OK
-
-        const fileTempPath = `https://web-chat-backend-s29s.onrender.com/tempSendMessages/encrypted/` + file.originalFilename
+        // Для отправки сообщения через WS для правильного отображения
+        // отправителя в диалогах
+        const userIdData = await findUserById(userId, 'id', 'users_safe', connection);
+        const currentUserIdData = await findUserById(currentUserId, 'id', 'users_safe', connection);
 
         const tempDirMessagesFiles = path.join(__dirname, '../../public/tempSendMessages/encrypted/' + file.originalFilename);
 
-        // Формируем данные сообщения
-        const messageData = {
-            id: message.id,
-            date: new Date(),
-            message: `Файл: ${file.originalFilename} \n ${message.message}`,
-            authorId: currentUserId,
-            userRecipient: userId,
-            created_at: new Date(),
-            file: {
-                url: fileTempPath,
-                type: metaDataFile.mimetype,
-                name: metaDataFile.originalFilename,
-                size: metaDataFile.size
-            }
+        const fileTempPath = `https://web-chat-backend-s29s.onrender.com/tempSendMessages/encrypted/` + file.originalFilename
+
+        if (fs.existsSync(tempDirMessagesFiles)) {
+            broadcastMessage({
+                type: 'message', message: `Файл: ${file.originalFilename} \n ${message.message}`, senderId: currentUserId, recipientId: userId, idMessage: message.id, file: {
+                    url: fileTempPath,
+                    type: metaDataFile.mimetype,
+                    name: metaDataFile.originalFilename,
+                    size: metaDataFile.size
+                }
+            });
         }
 
         const messages = await new Promise((resolve, reject) => {
@@ -123,36 +115,6 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
                 }
             );
         });
-
-        const dataStatuses = await getStatuses(userId, currentUserId, connection);
-
-        // Для отправки сообщения через WS для правильного отображения
-        // отправителя в диалогах
-        const userIdData = await findUserById(userId, 'id', 'users_safe', connection);
-        const currentUserIdData = await findUserById(currentUserId, 'id', 'users_safe', connection);
-
-        new Promise((resolve, reject) => {
-            connection.query(
-                'INSERT INTO messages (id, sender_id, recipient_id, created_at, message, file_url, file_type, file_name, file_size, iv) ' +
-                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [
-                    messageData.id,
-                    messageData.authorId,
-                    messageData.userRecipient,
-                    messageData.created_at,
-                    messageData.message,
-                    hrefForFileOnYD,
-                    metaDataFile.mimetype,
-                    metaDataFile.originalFilename,
-                    metaDataFile.size,
-                    metaDataFile.iv
-                ],
-                (err, result) => {
-                    if (err) return reject(err);
-                    resolve(result);
-                }
-            );
-        })
 
         broadcastMessage({
             type: 'info-about-chat', lastMessage: `Файл: ${file.originalFilename} \n ${message.message}`,
@@ -185,16 +147,56 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
             }
         })
 
-        if (fs.existsSync(tempDirMessagesFiles)) {
-            broadcastMessage({
-                type: 'message', message: `Файл: ${file.originalFilename} \n ${message.message}`, senderId: currentUserId, recipientId: userId, idMessage: message.id, file: {
-                    url: fileTempPath,
-                    type: metaDataFile.mimetype,
-                    name: metaDataFile.originalFilename,
-                    size: metaDataFile.size
-                }
-            });
+        // Теперь есть все, чтобы загрузить файл в облако и получить ссылку на него!
+        // Это мы и делаем...
+        const { href: hrefForFileOnYD, message: hrefYDMessage } = await sendFileOnYD({ file, dirForTempSaveFile: encryptedFilePath, ctx })
+
+        if (hrefYDMessage !== 'success') {
+            throw new Error('Ошибка отправки файла на Яндекс Диск')
         }
+
+        // Если у нас есть href то все OK
+        // https://web-chat-backend-s29s.onrender.com
+        // const fileTempPath = `http://localhost:7070/tempSendMessages/encrypted/` + file.originalFilename
+
+        // Формируем данные сообщения
+        const messageData = {
+            id: message.id,
+            date: new Date(),
+            message: `Файл: ${file.originalFilename} \n ${message.message}`,
+            authorId: currentUserId,
+            userRecipient: userId,
+            created_at: new Date(),
+            file: {
+                url: fileTempPath,
+                type: metaDataFile.mimetype,
+                name: metaDataFile.originalFilename,
+                size: metaDataFile.size
+            }
+        }
+
+        new Promise((resolve, reject) => {
+            connection.query(
+                'INSERT INTO messages (id, sender_id, recipient_id, created_at, message, file_url, file_type, file_name, file_size, iv) ' +
+                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [
+                    messageData.id,
+                    messageData.authorId,
+                    messageData.userRecipient,
+                    messageData.created_at,
+                    messageData.message,
+                    hrefForFileOnYD,
+                    metaDataFile.mimetype,
+                    metaDataFile.originalFilename,
+                    metaDataFile.size,
+                    metaDataFile.iv
+                ],
+                (err, result) => {
+                    if (err) return reject(err);
+                    resolve(result);
+                }
+            );
+        })
 
         // Теперь файл на YD и src файла в сообщениях к переписке
         // Выставляем статус 200
