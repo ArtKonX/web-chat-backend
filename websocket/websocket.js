@@ -115,7 +115,7 @@ const getWebSocketServer = (server, connection) => {
 
 function broadcastMessage({ type: type, message: message,
     senderId: senderId, recipientId: recipientId,
-    idMessage: idMessage, file: file, lengthMessages,
+    idMessage: idMessage, file: file, lengthMessages, isLastMessage,
     userId, nameSender, lastMessage, status, colorProfile, listDates }) {
 
     if (wssInstance) {
@@ -126,7 +126,7 @@ function broadcastMessage({ type: type, message: message,
             // пользователь с id является или
             // отправителем или получателем, то
             // отправляем
-          
+
             if (client.readyState === WebSocket.OPEN &&
                 (client.userId === senderId || client.userId === recipientId)) {
                 // Тип message для всех сообщений
@@ -157,6 +157,7 @@ function broadcastMessage({ type: type, message: message,
                         idMessage,
                         sender_id: senderId,
                         recipient_id: recipientId,
+                        isLastMessage
                     }))
                 } else {
                     client.send(JSON.stringify({

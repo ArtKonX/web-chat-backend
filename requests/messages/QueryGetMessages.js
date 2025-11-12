@@ -125,7 +125,6 @@ module.exports = QueryGetMessages = async (ctx, connection) => {
 
                     //Сохраняем url зашифрованного файла с сервера
                     // в сообщения
-                    // https://web-chat-backend-s29s.onrender.com
                     updatedMessage.file_url = `https://web-chat-backend-s29s.onrender.com/tempGetMessages/encrypted/` + updatedMessage.file_name
                     updatedMessage.file = {
                         originalName: updatedMessage.file_name,

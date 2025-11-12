@@ -156,8 +156,6 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
         }
 
         // Если у нас есть href то все OK
-        // https://web-chat-backend-s29s.onrender.com
-        // const fileTempPath = `http://localhost:7070/tempSendMessages/encrypted/` + file.originalFilename
 
         // Формируем данные сообщения
         const messageData = {

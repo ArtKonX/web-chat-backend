@@ -120,7 +120,8 @@ module.exports = QueryDeleteMessage = async (ctx, connection) => {
                 type: 'delete-message',
                 idMessage: messageId,
                 senderId: messageList[0].sender_id,
-                recipientId: messageList[0].recipient_id
+                recipientId: messageList[0].recipient_id,
+                isLastMessage: messages.length === 0
             })
 
             // Возвращаем статус 200 с успешным обновлением данных
