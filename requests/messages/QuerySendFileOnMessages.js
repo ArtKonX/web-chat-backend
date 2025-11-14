@@ -91,8 +91,8 @@ module.exports = QuerySendFileOnMessages = async (ctx, connection) => {
         const currentUserIdData = await findUserById(currentUserId, 'id', 'users_safe', connection);
 
         const tempDirMessagesFiles = path.join(__dirname, '../../public/tempSendMessages/encrypted/' + file.originalFilename);
-// https://web-chat-backend-s29s.onrender.com
-        const fileTempPath = `http://localhost:7070/tempSendMessages/encrypted/` + file.originalFilename
+
+        const fileTempPath = `https://web-chat-backend-s29s.onrender.com/tempSendMessages/encrypted/` + file.originalFilename
 
         if (fs.existsSync(tempDirMessagesFiles)) {
             broadcastMessage({
