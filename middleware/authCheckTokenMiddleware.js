@@ -14,44 +14,72 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
         // }
 
         const authorization = ctx.headers.authorization;
-        const token = authorization.split(' ')[1].replaceAll('"', '');
 
-        // Если его нет отправляем статус 500
-        if (!token) {
-            console.error('Отсутствует токен!');
-            ctx.response.status = 500;
+        console.log('dddd', authorization.split(' '), authorization.split(' ').length !== 2)
+
+        if (authorization.split(' ')[1] === '"error-success-token"') {
+            console.log('Время токена истекло или закончились попытки пин-кода!');
+            ctx.response.status = 400;
             ctx.response.body = {
-                message: 'Отсутствует токен',
-                status: 'error'
+                message: 'Время токена истекло или закончились попытки пин-кода!',
+                status: 'error-with-pin-code'
             }
-        }
 
-        if (token) {
-            // Верифицируем полученный только что токен и получем
-            // полузную нагрузку в которой есть id пользователя
-            // он нам как раз и нужен
-            // сохраняем его в общем пространстве имен для
-            // далнейшего взаимодействия
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        } else {
 
-            // Если все ок продолжаем...
-            if (decoded) {
+            const token = authorization.split(' ')[1].replaceAll('"', '');
 
-                // Если есть такой юзер с id, то продолжаем
-                if (decoded.userId) {
-                    ctx.state.userId = decoded.userId;
+            // Если его нет отправляем статус 500
+            if (!token) {
+                console.error('Отсутствует токен!');
+                ctx.response.status = 500;
+                ctx.response.body = {
+                    message: 'Отсутствует токен',
+                    status: 'error'
+                }
+            }
 
-                    // Мы успешно проверили токен,
-                    // отправляем статус 200
-                    console.log('Успешная проверка токена!');
-                    ctx.response.status = 200;
-                    ctx.response.body = {
-                        message: 'Успешная проверка токена!',
-                        status: 'ok'
+            if (token) {
+                // Верифицируем полученный только что токен и получем
+                // полузную нагрузку в которой есть id пользователя
+                // он нам как раз и нужен
+                // сохраняем его в общем пространстве имен для
+                // далнейшего взаимодействия
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+                // Если все ок продолжаем...
+                if (decoded) {
+
+                    // Если есть такой юзер с id, то продолжаем
+                    if (decoded.userId) {
+                        ctx.state.userId = decoded.userId;
+
+                        // Мы успешно проверили токен,
+                        // отправляем статус 200
+                        console.log('Успешная проверка токена!');
+                        ctx.response.status = 200;
+                        ctx.response.body = {
+                            message: 'Успешная проверка токена!',
+                            status: 'ok'
+                        }
+
+                        // Передаем работу следующими мидлваре или возвращаемся к нам
+                        await next();
+                    } else {
+                        console.log('Время токена истекло или закончились попытки пин-кода!');
+                        ctx.response.status = 400;
+                        ctx.response.body = {
+                            message: 'Время токена истекло или закончились попытки пин-кода!',
+                            status: 'error-with-pin-code'
+                        }
                     }
-
-                    // Передаем работу следующими мидлваре или возвращаемся к нам
-                    await next();
+                } else {
+                    console.log('Время токена истекло или закончились попытки пин-кода!');
+                    ctx.response.status = 400;
+                    ctx.response.body = {
+                        message: 'Время токена истекло или закончились попытки пин-кода!',
+                        status: 'error-with-pin-code'
+                    }
                 }
             }
         }

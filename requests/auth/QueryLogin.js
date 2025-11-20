@@ -63,6 +63,23 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
 
         // Теперь у пользователя может быть включена 2FA
         if (findWarningUser.fa2_enabled) {
+            if (findWarningUser.fa2_attempts <= 1) {
+                // Если все попытки израсходованы, то оставляем в числе попыток 0
+                // на 2 дня и после возвращаем 5 для того чтобы злоумышленник не смог зайти
+                console.error(`Вы израсходовали все попытки! Пин код не верный(`);
+                ctx.response.status = 500;
+                ctx.response.body = {
+                    data: {
+                        succesPinCode: 'error'
+                    },
+                    message: `Вы израсходовали все попытки! Пин код не верный(`,
+                    status: 'error'
+                };
+
+                return
+            }
+
+
             // Если нет пин кода возвращаем ошибку
             if (!pin) {
                 console.error('Отсутсвует пин код!');
