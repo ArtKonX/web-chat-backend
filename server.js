@@ -49,6 +49,9 @@ const QueryFindUsers = require('./requests/users/QueryFindUsers');
 // Запрос, который работает с сообщениями БОТ'а
 const QueryBotSendMessages = require('./requests/bot-logic/QueryBotSendMessages');
 
+// Запрос, на проверку работы сервера
+const QueryWorkServer = require('./requests/test-work-server/QueryWorkServer');
+
 const Koa = require('koa');
 const koaStatic = require('koa-static');
 const Router = require('koa-router');
@@ -182,6 +185,8 @@ pool.on('error', async (err) => {
     process.exit(1); // Завершаем процесс, если все попытки подключения неудачны
   }
 })();
+
+router.get('/test-work-server', QueryWorkServer);
 
 router.post('/check-token', async (ctx, next) => {
 
