@@ -84,6 +84,23 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
                 //     sameSite: 'None'
                 // });
 
+                // Обнуляем попытки
+                new Promise((resolve, reject) => {
+                    connection.query(
+                        'UPDATE users_warning ' +
+                        'SET fa2_attempts = ? ' +
+                        'WHERE id = ?',
+                        [
+                            0,
+                            id
+                        ],
+                        (err, result) => {
+                            if (err) return reject(err);
+                            resolve(result);
+                        }
+                    );
+                })
+
                 setTimeout(() => {
                     updateAttempts(connection, findWarningUser.id, 5)
                 }, 2 * 24 * 60 * 60 * 1000);

@@ -90,6 +90,23 @@ module.exports = Query2FADisable = async (ctx, connection) => {
                 //     sameSite: 'None'
                 // });
 
+                // Обнуляем попытки
+                new Promise((resolve, reject) => {
+                    connection.query(
+                        'UPDATE users_warning ' +
+                        'SET fa2_attempts = ? ' +
+                        'WHERE id = ?',
+                        [
+                            0,
+                            id
+                        ],
+                        (err, result) => {
+                            if (err) return reject(err);
+                            resolve(result);
+                        }
+                    );
+                })
+
                 console.error(`Вы израсходовали все попытки! Пин код не верный(`);
                 ctx.response.status = 500;
                 ctx.response.body = {
@@ -101,22 +118,7 @@ module.exports = Query2FADisable = async (ctx, connection) => {
                     status: 'error'
                 };
 
-                // Добавляем попытки
-                new Promise((resolve, reject) => {
-                    connection.query(
-                        'UPDATE users_warning ' +
-                        'SET fa2_attempts = ? ' +
-                        'WHERE id = ?',
-                        [
-                            5,
-                            id
-                        ],
-                        (err, result) => {
-                            if (err) return reject(err);
-                            resolve(result);
-                        }
-                    );
-                })
+                return
             }
         }
 

@@ -65,7 +65,24 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
         if (findWarningUser.fa2_enabled) {
             if (findWarningUser.fa2_attempts <= 1) {
                 // Если все попытки израсходованы, то оставляем в числе попыток 0
-                // на 2 дня и после возвращаем 5 для того чтобы злоумышленник не смог зайти
+
+                // Обнуляем попытки
+                new Promise((resolve, reject) => {
+                    connection.query(
+                        'UPDATE users_warning ' +
+                        'SET fa2_attempts = ? ' +
+                        'WHERE id = ?',
+                        [
+                            0,
+                            id
+                        ],
+                        (err, result) => {
+                            if (err) return reject(err);
+                            resolve(result);
+                        }
+                    );
+                })
+
                 console.error(`Вы израсходовали все попытки! Пин код не верный(`);
                 ctx.response.status = 500;
                 ctx.response.body = {
@@ -77,107 +94,108 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
                 };
 
                 return
+            } else {
+
+
+                // Если нет пин кода возвращаем ошибку
+                if (!pin) {
+                    console.error('Отсутсвует пин код!');
+                    ctx.response.status = 400;
+                    ctx.response.body = {
+                        message: `Отсутсвует пин код!`,
+                        status: 'not-pin-code'
+                    };
+
+                    return
+                }
+
+                // Если включена проверяем пин
+                const isSuccessFA2 = bcrypt.compareSync(pin, findWarningUser.fa2_pin);
+
+                // Если неправильный pin то уменьшаем число попыток на одну
+                // и выкидываем 500 статус
+                if (!isSuccessFA2 && findWarningUser.fa2_attempts > 0) {
+                    updateAttempts(connection, findWarningUser.id, findWarningUser.fa2_attempts - 1)
+                    console.error(`Пин код не верный!`);
+                    ctx.response.status = 500;
+                    ctx.response.body = {
+                        data: {
+                            attempt: findWarningUser.fa2_attempts - 1
+                        },
+                        message: `Пин код не верный!`,
+                        status: 'error'
+                    };
+                    return
+                } else if (!isSuccessFA2 && findWarningUser.fa2_attempts <= 0) {
+                    // Если все попытки израсходованы, то оставляем в числе попыток 0
+                    // на 2 дня и после возвращаем 5 для того чтобы злоумышленник не смог зайти
+                    console.error(`Вы израсходовали все попытки! Пин код не верный(`);
+                    ctx.response.status = 500;
+                    ctx.response.body = {
+                        data: {
+                            succesPinCode: 'error'
+                        },
+                        message: `Вы израсходовали все попытки! Пин код не верный(`,
+                        status: 'error'
+                    };
+
+                    setTimeout(() => {
+                        updateAttempts(connection, findWarningUser.id, 5)
+                    }, 2 * 24 * 60 * 60 * 1000);
+                    return
+                }
             }
 
+            // Если все ок
+            // Пошли к генерации JWT токена!
 
-            // Если нет пин кода возвращаем ошибку
-            if (!pin) {
-                console.error('Отсутсвует пин код!');
-                ctx.response.status = 400;
-                ctx.response.body = {
-                    message: `Отсутсвует пин код!`,
-                    status: 'not-pin-code'
-                };
+            const payload = {
+                userId: findWarningUser.id,
+                email: findWarningUser.email
+            };
 
-                return
-            }
+            // Остановимся на 7 днях действительности токена
+            const expiresIn = '7d';
 
-            // Если включена проверяем пин
-            const isSuccessFA2 = bcrypt.compareSync(pin, findWarningUser.fa2_pin);
+            // Используем HS256 алгоритм, который по умолчанию
+            const token = sign(payload, process.env.JWT_SECRET, {
+                expiresIn
+            });
 
-            // Если неправильный pin то уменьшаем число попыток на одну
-            // и выкидываем 500 статус
-            if (!isSuccessFA2 && findWarningUser.fa2_attempts > 0) {
-                updateAttempts(connection, findWarningUser.id, findWarningUser.fa2_attempts - 1)
-                console.error(`Пин код не верный!`);
-                ctx.response.status = 500;
-                ctx.response.body = {
-                    data: {
-                        attempt: findWarningUser.fa2_attempts - 1
-                    },
-                    message: `Пин код не верный!`,
-                    status: 'error'
-                };
-                return
-            } else if (!isSuccessFA2 && findWarningUser.fa2_attempts <= 0) {
-                // Если все попытки израсходованы, то оставляем в числе попыток 0
-                // на 2 дня и после возвращаем 5 для того чтобы злоумышленник не смог зайти
-                console.error(`Вы израсходовали все попытки! Пин код не верный(`);
-                ctx.response.status = 500;
-                ctx.response.body = {
-                    data: {
-                        succesPinCode: 'error'
-                    },
-                    message: `Вы израсходовали все попытки! Пин код не верный(`,
-                    status: 'error'
-                };
+            // Формируем печеньки в браузере)
+            // Куки на 7 дней ровно столько действителен токен
+            // httpOnly чтобы был запрет к кукам из JS для безопасности
+            // secure для передачи только по HTTPS
+            // sameSite: 'None' без этого куки не работаю в Хроме
 
-                setTimeout(() => {
-                    updateAttempts(connection, findWarningUser.id, 5)
-                }, 2 * 24 * 60 * 60 * 1000);
-                return
-            }
+
+            // const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
+
+            // ctx.cookies.set('jwtToken', token, {
+            //     expires: new Date(Date.now() + 604800000),
+            //     httpOnly: true,
+            //     secure: true,
+            //     sameSite: 'none'
+            // });
+
+            // console.log('Cookies теперь работают)');
+
+            // Теперь мы вошли в систему)
+            console.log('Поздравляю с успешной входом в систему!');
+            ctx.status = 200;
+            ctx.body = {
+                user: {
+                    id: findWarningUser.id,
+                    name: findWarningUser.name,
+                    email: findWarningUser.email,
+                    token
+                },
+                message: 'Успешный вход в систему!',
+                status: 'ok'
+            };
+
+            await next();
         }
-
-        // Если все ок
-        // Пошли к генерации JWT токена!
-
-        const payload = {
-            userId: findWarningUser.id,
-            email: findWarningUser.email
-        };
-
-        // Остановимся на 7 днях действительности токена
-        const expiresIn = '7d';
-
-        // Используем HS256 алгоритм, который по умолчанию
-        const token = sign(payload, process.env.JWT_SECRET, {
-            expiresIn
-        });
-
-        // Формируем печеньки в браузере)
-        // Куки на 7 дней ровно столько действителен токен
-        // httpOnly чтобы был запрет к кукам из JS для безопасности
-        // secure для передачи только по HTTPS
-        // sameSite: 'None' без этого куки не работаю в Хроме
-
-
-        // const isSecure = ctx.request.headers['x-forwarded-proto'] === 'https' || ctx.request.secure;
-
-        // ctx.cookies.set('jwtToken', token, {
-        //     expires: new Date(Date.now() + 604800000),
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'none'
-        // });
-
-        // console.log('Cookies теперь работают)');
-
-        // Теперь мы вошли в систему)
-        console.log('Поздравляю с успешной входом в систему!');
-        ctx.status = 200;
-        ctx.body = {
-            user: {
-                id: findWarningUser.id,
-                name: findWarningUser.name,
-                email: findWarningUser.email,
-                token
-            },
-            message: 'Успешный вход в систему!',
-            status: 'ok'
-        };
-
-        await next();
 
     } catch (err) {
         console.error('Ошибка входа в систему( ', err.message);
