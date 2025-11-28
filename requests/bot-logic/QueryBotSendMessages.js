@@ -161,28 +161,28 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2,
                         nameSender: {
-                            [userIdData.id]:
-                                { name: userIdData.name },
-                            [userSafeFind.id]:
-                                { name: userSafeFind.name }
+                            [userIdData?.id]:
+                                { name: userIdData?.name },
+                            [userSafeFind?.id]:
+                                { name: userSafeFind?.name }
                         },
                         userId: {
-                            [userIdData.id]:
-                                { id: userIdData.id },
-                            [userSafeFind.id]:
-                                { id: userSafeFind.id }
+                            [userIdData?.id]:
+                                { id: userIdData?.id },
+                            [userSafeFind?.id]:
+                                { id: userSafeFind?.id }
                         },
                         colorProfile: {
-                            [userIdData.id]:
-                                { color_profile: userIdData.color_profile },
-                            [userSafeFind.id]:
-                                { color_profile: userSafeFind.color_profile }
+                            [userIdData?.id]:
+                                { color_profile: userIdData?.color_profile },
+                            [userSafeFind?.id]:
+                                { color_profile: userSafeFind?.color_profile }
                         },
                         status: {
-                            [dataStatuses[0].id]:
-                                { status: dataStatuses[0].status },
-                            [dataStatuses[1].id]:
-                                { status: dataStatuses[1].status }
+                            [dataStatuses[0]?.id]:
+                                { status: dataStatuses[0]?.status },
+                            [dataStatuses[1]?.id]:
+                                { status: dataStatuses[1]?.status }
                         }
                     })
                 } else if (indx === 1) {
@@ -251,28 +251,28 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         recipientId: currentUserId, idMessage: idMessageFromBot,
                         lengthMessages: messages.length + 2,
                         nameSender: {
-                            [userIdData.id]:
-                                { name: userIdData.name },
-                            [userSafeFind.id]:
-                                { name: userSafeFind.name }
+                            [userIdData?.id]:
+                                { name: userIdData?.name },
+                            [userSafeFind?.id]:
+                                { name: userSafeFind?.name }
                         },
                         userId: {
-                            [userIdData.id]:
-                                { id: userIdData.id },
-                            [userSafeFind.id]:
-                                { id: userSafeFind.id }
+                            [userIdData?.id]:
+                                { id: userIdData?.id },
+                            [userSafeFind?.id]:
+                                { id: userSafeFind?.id }
                         },
                         colorProfile: {
-                            [userIdData.id]:
-                                { color_profile: userIdData.color_profile },
-                            [userSafeFind.id]:
-                                { color_profile: userSafeFind.color_profile }
+                            [userIdData?.id]:
+                                { color_profile: userIdData?.color_profile },
+                            [userSafeFind?.id]:
+                                { color_profile: userSafeFind?.color_profile }
                         },
                         status: {
-                            [dataStatuses[0].id]:
-                                { status: dataStatuses[0].status },
-                            [dataStatuses[1].id]:
-                                { status: dataStatuses[1].status }
+                            [dataStatuses[0]?.id]:
+                                { status: dataStatuses[0]?.status },
+                            [dataStatuses[1]?.id]:
+                                { status: dataStatuses[1]?.status }
                         }
                     });
                 } else if (indx === 1) {
@@ -354,28 +354,28 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                         lengthMessages: messages.length + 2,
                         listDates: messages.map(item => item.created_at),
                         nameSender: {
-                            [userIdData.id]:
-                                { name: userIdData.name },
-                            [userSafeFind.id]:
-                                { name: userSafeFind.name }
+                            [userIdData?.id]:
+                                { name: userIdData?.name },
+                            [userSafeFind?.id]:
+                                { name: userSafeFind?.name }
                         },
                         userId: {
-                            [userIdData.id]:
-                                { id: userIdData.id },
-                            [userSafeFind.id]:
-                                { id: userSafeFind.id }
+                            [userIdData?.id]:
+                                { id: userIdData?.id },
+                            [userSafeFind?.id]:
+                                { id: userSafeFind?.id }
                         },
                         colorProfile: {
-                            [userIdData.id]:
-                                { color_profile: userIdData.color_profile },
-                            [userSafeFind.id]:
-                                { color_profile: userSafeFind.color_profile }
+                            [userIdData?.id]:
+                                { color_profile: userIdData?.color_profile },
+                            [userSafeFind?.id]:
+                                { color_profile: userSafeFind?.color_profile }
                         },
                         status: {
-                            [dataStatuses[0].id]:
-                                { status: dataStatuses[0].status },
-                            [dataStatuses[1].id]:
-                                { status: dataStatuses[1].status }
+                            [dataStatuses[0]?.id]:
+                                { status: dataStatuses[0]?.status },
+                            [dataStatuses[1]?.id]:
+                                { status: dataStatuses[1]?.status }
                         }
                     });
                 } else if (indx === 1) {

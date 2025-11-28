@@ -81,28 +81,28 @@ module.exports = QueryChangeMessage = async (ctx, connection) => {
                     idMessage: messages[messages.length - 1].id, lengthMessages: messages.length,
                     listDates: messages.map(item => item.created_at),
                     nameSender: {
-                        [userIdData.id]:
-                            { name: userIdData.name },
-                        [currentUserIdData.id]:
-                            { name: currentUserIdData.name }
+                        [userIdData?.id]:
+                            { name: userIdData?.name },
+                        [currentUserIdData?.id]:
+                            { name: currentUserIdData?.name }
                     },
                     userId: {
-                        [userIdData.id]:
-                            { id: userIdData.id },
-                        [currentUserIdData.id]:
-                            { id: currentUserIdData.id }
+                        [userIdData?.id]:
+                            { id: userIdData?.id },
+                        [currentUserIdData?.id]:
+                            { id: currentUserIdData?.id }
                     },
                     colorProfile: {
-                        [userIdData.id]:
-                            { color_profile: userIdData.color_profile },
-                        [currentUserIdData.id]:
-                            { color_profile: currentUserIdData.color_profile }
+                        [userIdData?.id]:
+                            { color_profile: userIdData?.color_profile },
+                        [currentUserIdData?.id]:
+                            { color_profile: currentUserIdData?.color_profile }
                     },
                     status: {
-                        [dataStatuses[0].id]:
-                            { status: dataStatuses[0].status },
-                        [dataStatuses[1].id]:
-                            { status: dataStatuses[1].status }
+                        [dataStatuses[0]?.id]:
+                            { status: dataStatuses[0]?.status },
+                        [dataStatuses[1]?.id]:
+                            { status: dataStatuses[1]?.status }
                     }
 
                 })

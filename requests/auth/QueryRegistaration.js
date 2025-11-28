@@ -49,8 +49,11 @@ module.exports = QueryRegistaration = async (ctx, connection) => {
             ctx.response.status = 404;
             ctx.response.body = {
                 message: `У кого-то этот email - ${email} уже существует!`,
+                statusError: 'error-duplicate',
                 status: 'error'
             };
+
+            return
         }
 
         // Пока все ок)

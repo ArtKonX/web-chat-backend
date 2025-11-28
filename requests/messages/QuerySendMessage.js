@@ -83,30 +83,30 @@ module.exports = QuerySendMessage = async (ctx, connection) => {
             senderId: messageData.sender_id,
             recipientId: messageData.recipient_id,
             listDates: messages.map(item => item.created_at),
-            idMessage: message.id, lengthMessages: messages.length,
+            idMessage: message?.id, lengthMessages: messages.length,
             nameSender: {
-                [userIdData.id]:
+                [userIdData?.id]:
                     { name: userIdData.name },
-                [currentUserIdData.id]:
+                [currentUserIdData?.id]:
                     { name: currentUserIdData.name }
             },
             userId: {
-                [userIdData.id]:
-                    { id: userIdData.id },
-                [currentUserIdData.id]:
-                    { id: currentUserIdData.id }
+                [userIdData?.id]:
+                    { id: userIdData?.id },
+                [currentUserIdData?.id]:
+                    { id: currentUserIdData?.id }
             },
             colorProfile: {
-                [userIdData.id]:
+                [userIdData?.id]:
                     { color_profile: userIdData.color_profile },
-                [currentUserIdData.id]:
+                [currentUserIdData?.id]:
                     { color_profile: currentUserIdData.color_profile }
             },
             status: {
-                [dataStatuses[0].id]:
-                    { status: dataStatuses[0].status },
-                [dataStatuses[1].id]:
-                    { status: dataStatuses[1].status }
+                [dataStatuses[0]?.id]:
+                    { status: dataStatuses[0]?.status },
+                [dataStatuses[1]?.id]:
+                    { status: dataStatuses[1]?.status }
             }
         })
 
