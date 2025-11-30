@@ -148,6 +148,25 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
                 }, 2 * 24 * 60 * 60 * 1000);
                 return
             }
+
+            // Если верный пин-код то сбрасываем число попыток до 5
+            if (isSuccessFA2 && findWarningUser.fa2_attempts > 0) {
+                new Promise((resolve, reject) => {
+                    connection.query(
+                        'UPDATE users_warning ' +
+                        'SET fa2_attempts = ? ' +
+                        'WHERE id = ?',
+                        [
+                            5,
+                            id
+                        ],
+                        (err, result) => {
+                            if (err) return reject(err);
+                            resolve(result);
+                        }
+                    );
+                })
+            }
         }
 
         // Если все ок

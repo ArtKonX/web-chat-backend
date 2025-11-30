@@ -122,6 +122,25 @@ module.exports = QueryUpdateDataUser = async (ctx, connection) => {
                 };
                 return
             }
+
+            // Если верный пин-код то сбрасываем число попыток до 5
+            if (isSuccessFA2 && findWarningUser.fa2_attempts > 0) {
+                new Promise((resolve, reject) => {
+                    connection.query(
+                        'UPDATE users_warning ' +
+                        'SET fa2_attempts = ? ' +
+                        'WHERE id = ?',
+                        [
+                            5,
+                            id
+                        ],
+                        (err, result) => {
+                            if (err) return reject(err);
+                            resolve(result);
+                        }
+                    );
+                })
+            }
         }
 
         // Иначе меняем данные, которые изменились и для опасных данных и для
