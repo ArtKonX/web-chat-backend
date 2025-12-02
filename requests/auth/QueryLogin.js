@@ -158,7 +158,7 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
                         'WHERE id = ?',
                         [
                             5,
-                            id
+                            findWarningUser.id
                         ],
                         (err, result) => {
                             if (err) return reject(err);
