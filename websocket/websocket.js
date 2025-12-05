@@ -27,6 +27,12 @@ const getWebSocketServer = (server, connection) => {
                         ws.userId = data.userId;
                         console.log(`Клиент ${data.userId} подключился`);
 
+                        broadcastMessage({
+                            type: 'user-status',
+                            userId: data.userId,
+                            status: true
+                        });
+
                         const [user] = await new Promise((resolve, reject) => {
                             connection.query(
                                 'SELECT * FROM users_statuses WHERE id = ?',
@@ -66,11 +72,6 @@ const getWebSocketServer = (server, connection) => {
                                         }
                                     );
                                 });
-                                broadcastMessage({
-                                    type: 'user-status',
-                                    userId: data.userId,
-                                    status: true
-                                });
                                 console.log(`Пользователь ${data.userId} подключился`);
                             } catch (err) {
                                 console.error('Ошибка обновления пользвательского статуса: ', err)
@@ -85,6 +86,12 @@ const getWebSocketServer = (server, connection) => {
             // если отключаемся, то выводим сообщение
             ws.on('close', async () => {
                 console.log(`Клиент ${ws.userId} отключился`);
+                broadcastMessage({
+                    type: 'user-status',
+                    userId: ws.userId,
+                    status: false
+                });
+
                 try {
                     await new Promise((resolve, reject) => {
                         connection.query(
@@ -95,12 +102,6 @@ const getWebSocketServer = (server, connection) => {
                                 resolve(results);
                             }
                         );
-                    });
-
-                    broadcastMessage({
-                        type: 'user-status',
-                        userId: ws.userId,
-                        status: false
                     });
                 } catch (err) {
                     console.error('Ошибка обновления статуса юзера: ', err)
