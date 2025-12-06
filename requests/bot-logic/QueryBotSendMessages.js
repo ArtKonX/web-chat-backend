@@ -198,7 +198,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                             senderId: userId, recipientId: currentUserId,
                             idMessage: idMessageFromBot
                         })
-                    }, 400)
+                    }, 1000)
                 }
             }
 
@@ -288,7 +288,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                             senderId: userId, recipientId: currentUserId,
                             idMessage: idMessageFromBot
                         });
-                    }, 400)
+                    }, 1000)
                 }
             }
 
@@ -391,7 +391,7 @@ module.exports = QueryBotSendMessages = async (ctx, connection) => {
                             senderId: userId, recipientId: currentUserId,
                             idMessage: idMessageFromBot
                         });
-                    }, 400)
+                    }, 1000)
                 }
             }
 
