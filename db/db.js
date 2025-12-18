@@ -13,5 +13,6 @@ module.exports = pool = mysql.createPool({
     waitForConnections: true,
     connectTimeout: 60 * 60 * 1000,
     acquireTimeout: 60 * 60 * 1000,
-    multipleStatements: true
+    multipleStatements: true,
+    waitForConnections: false
 });
