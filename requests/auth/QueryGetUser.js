@@ -29,8 +29,6 @@ module.exports = QueryGetUser = async (ctx, connection, next) => {
             status: 'ok'
         };
 
-        await next();
-
     } catch (err) {
         console.error('Ошибка получения данных юзера( ', err.message);
         ctx.response.status = 500;

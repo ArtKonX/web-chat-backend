@@ -436,6 +436,8 @@ router.get('/get-user', async (ctx, next) => {
 
     connection = await getConnection(pool);
 
+    console.log('connection', connection)
+
     if (connection) {
 
       await QueryGetUser(ctx, connection, next);

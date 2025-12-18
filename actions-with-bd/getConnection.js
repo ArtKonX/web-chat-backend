@@ -8,6 +8,7 @@ module.exports = getConnection = async (pool) => {
                 }
 
                 // Возвращаем соединение
+                console.log('Успешное подключение к БД')
                 resolve(conn);
             });
         });
