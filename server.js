@@ -434,7 +434,7 @@ router.get('/get-user', async (ctx, next) => {
   let connection;
   try {
 
-        console.log('1 connection', connection)
+    console.log('1 connection', connection)
 
     connection = await getConnection(pool);
 
@@ -442,7 +442,7 @@ router.get('/get-user', async (ctx, next) => {
 
     // if (connection) {
 
-      await QueryGetUser(ctx, connection, next);
+    await QueryGetUser(ctx, connection, next);
     // }
   } catch (error) {
     console.error(error)
@@ -909,6 +909,10 @@ const getWSServer = async () => {
     }
   }
 }
+
+setInterval(() => {
+  console.log('Pool status:', pool.getStatus());
+}, 10000);
 
 getWSServer()
 
