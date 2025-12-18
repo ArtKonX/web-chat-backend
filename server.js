@@ -195,7 +195,8 @@ router.post('/check-token', async (ctx, next) => {
     // Получаем соединение из пула
     connection = await getConnection(pool);
 
-    if (connection) await authCheckTokenMiddleware(ctx, next);
+    // if (connection)
+    await authCheckTokenMiddleware(ctx, next);
   } catch (error) {
     console.error(error)
   } finally {
@@ -250,9 +251,9 @@ router.patch('/update-user', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -284,9 +285,9 @@ router.patch('/update-public-key', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -318,9 +319,9 @@ router.get('/get-user-status', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -352,9 +353,9 @@ router.get('/get-public-keys', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -386,9 +387,9 @@ router.get('/get-info-dialogues', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -417,10 +418,10 @@ router.get('/get-info-dialogues', async (ctx, next) => {
 router.get('/get-user', async (ctx, next) => {
   let connection;
   try {
-    connection = await getConnection(pool);
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // connection = await getConnection(pool);
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -459,9 +460,9 @@ router.patch('/update-city', async (ctx, next) => {
     // Получаем соединение из пула
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -496,10 +497,10 @@ router.get('/get-messages', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
+    // if (connection) {
 
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -531,10 +532,10 @@ router.get('/get-length-next-messages', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
+    // if (connection) {
 
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -566,9 +567,9 @@ router.post('/create-message', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -601,9 +602,9 @@ router.patch('/update-message', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -636,9 +637,9 @@ router.delete('/delete-message', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -671,10 +672,10 @@ router.post('/upload-file', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
+    // if (connection) {
 
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -708,10 +709,10 @@ router.get('/get-users', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
+    // if (connection) {
 
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -746,9 +747,9 @@ router.post('/2FA-disable', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -781,9 +782,9 @@ router.post('/2FA-on', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    // if (connection) {
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error)
   } finally {
@@ -816,10 +817,10 @@ router.post('/send-message-bot', async (ctx, next) => {
   try {
     connection = await getConnection(pool);
 
-    if (connection) {
+    // if (connection) {
 
-      await authCheckTokenMiddleware(ctx, next, connection, pool);
-    }
+    await authCheckTokenMiddleware(ctx, next);
+    // }
   } catch (error) {
     console.error(error);
   } finally {
