@@ -15,7 +15,7 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
 
         const authorization = ctx.headers.authorization;
 
-        console.log('dddd', authorization.split(' '), authorization.split(' ').length !== 2)
+        console.log('dddd', authorization.split(' '), authorization.split(' ').length !== 2, authorization.split(' ')[1] === '"error-success-token"')
 
         if (authorization.split(' ')[1] === '"error-success-token"') {
             console.log('Время токена истекло или закончились попытки пин-кода!');
@@ -28,6 +28,8 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
         } else {
 
             const token = authorization.split(' ')[1].replaceAll('"', '');
+
+            console.log('token', token)
 
             // Если его нет отправляем статус 500
             if (!token) {
@@ -47,6 +49,8 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
                 // далнейшего взаимодействия
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+                console.log('decoded', decoded)
+
                 // Если все ок продолжаем...
                 if (decoded) {
 
@@ -56,7 +60,7 @@ module.exports = async function authCheckTokenMiddleware(ctx, next) {
 
                         // Мы успешно проверили токен,
                         // отправляем статус 200
-                        console.log('Успешная проверка токена!');
+                        console.log('Успешная проверка токена!', ctx.state.userId);
                         ctx.response.status = 200;
                         ctx.response.body = {
                             message: 'Успешная проверка токена!',
