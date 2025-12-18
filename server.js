@@ -910,10 +910,6 @@ const getWSServer = async () => {
   }
 }
 
-setInterval(() => {
-  console.log('Pool status:', pool.getStatus());
-}, 10000);
-
 getWSServer()
 
 server.listen(port, (err) => {
