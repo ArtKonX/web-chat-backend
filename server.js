@@ -128,12 +128,10 @@ async function runMigrations(connection) {
 async function connectWithRetries(maxRetries = 5, delay = 2000) {
   let attempts = 0;
 
-  let connection
-
   while (attempts < maxRetries) {
     try {
       // Пытаемся получить соединение
-      connection = await new Promise((resolve, reject) => {
+      const connection = await new Promise((resolve, reject) => {
         pool.getConnection((err, conn) => {
           if (err) {
             return reject(err);
@@ -161,11 +159,6 @@ async function connectWithRetries(maxRetries = 5, delay = 2000) {
 
       // Ждем перед следующей попыткой
       await new Promise(resolve => setTimeout(resolve, delay));
-    } finally {
-      // Освобождаем соединение
-      if (connection) {
-        connection.release();
-      }
     }
   }
 }
@@ -449,7 +442,7 @@ router.get('/get-user', async (ctx, next) => {
 
     if (connection) {
 
-      await QueryGetUser(ctx, connection, next);
+    await QueryGetUser(ctx, connection, next);
     }
   } catch (error) {
     console.error(error)
