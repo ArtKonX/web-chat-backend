@@ -7,6 +7,8 @@ module.exports = QueryGetUser = async (ctx, connection, next) => {
         // Находим юзера по id
         const findedUserById = await findUserById(ctx.state.userId, 'id', 'users_safe', connection);
 
+        console.log('findedUserById', findedUserById, ctx.state.userId)
+
         // Если такого нет выкидываем 404
         if (findedUserById.message === 'error') {
             console.error(`Такой юзер по id - ${ctx.state.userId} не существует(`);
