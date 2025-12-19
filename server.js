@@ -434,11 +434,7 @@ router.get('/get-user', async (ctx, next) => {
   let connection;
   try {
 
-    console.log('1 connection', connection, pool)
-
     connection = await getConnection(pool);
-
-    console.log('2 connection', connection)
 
     if (connection) {
 

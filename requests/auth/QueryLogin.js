@@ -36,8 +36,6 @@ module.exports = QueryLogin = async (ctx, next, connection) => {
         // Находим юзера в опасных данных
         const findWarningUser = await findUserById(email, 'email', 'users_warning', connection)
 
-        console.log('findWarningUser', findWarningUser)
-
         // Если юзера с таким ящиком нет, то выбрасываем статус 404
         if (findWarningUser.message === 'error') {
             console.error(`Пользователь с такой почтой - ${email} не найден!`);

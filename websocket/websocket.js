@@ -10,7 +10,7 @@ const getWebSocketServer = (server, connection) => {
 
         wssInstance.on('connection', (ws) => {
             // создаем соединение с начальным id
-            // null
+
             ws.userId = null;
 
             // обработчик сообщений
